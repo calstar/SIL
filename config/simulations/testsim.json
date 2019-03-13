@@ -1,0 +1,29 @@
+{
+  "rocket": "config/rockets/testrocket.json",
+  "wind": {
+    "type": "fixed",
+    "x": 1,
+    "y": 0,
+    "z": 0
+  },
+  "ground_height": 10,
+  "ground_height_far": 20,
+  "timeout": 3,
+  "output": [
+    {
+      "type": "acceleration",
+      "file": "acceleration_data.csv",
+      "frequency": 1000
+    },
+    {
+      "type": "accelerometer",
+      "file": "accelerometer_data.csv",
+      "frequency": 1000
+    },
+    {
+      "type": "altitude",
+      "file": "altitude_data.csv",
+      "frequency": 100000
+    }
+  ]
+}

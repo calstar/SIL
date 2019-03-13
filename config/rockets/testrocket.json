@@ -1,0 +1,78 @@
+[
+  {
+    "name": "booster",
+    "weight": 5,
+    "drag_area": 0.02,
+    "leds": {
+      "led1": "flight_computer:10",
+      "led2": "flight_computer:11"
+    },
+    "motors": {
+      "booster": {
+        "file": "config/motors/aerotech_j800t.json",
+        "pin": "flight_computer:3"
+      }
+    },
+    "separators": {
+      "stage1": {
+        "separate": "sustainer",
+        "pin": "flight_computer:5"
+      }
+    },
+    "chutes": {
+      "drogue": {
+        "drag_area": 5,
+        "pin": "flight_computer:6"
+      },
+      "main": {
+        "drag_area": 30,
+        "pin": "flight_computer:7"
+      }
+    },
+    "microcontrollers": {
+      "flight_computer": {
+        "id": 0,
+        "pin": "telemetry_power_control:9"
+      },
+      "telemetry_power_control": {
+        "id": 1
+      }
+    }
+  },
+  {
+    "name": "sustainer",
+    "weight": 0.67,
+    "drag_area": 0.02,
+    "leds": {
+      "led1": "flight_computer:10",
+      "led2": "flight_computer:11"
+    },
+    "motors": {
+      "sustainer": {
+        "file": "config/motors/testdudmotor.json",
+        "pin": "flight_computer:3"
+      }
+    },
+    "separators": {
+    },
+    "chutes": {
+      "drogue": {
+        "drag_area": 10,
+        "pin": "flight_computer:6"
+      },
+      "main": {
+        "drag_area": 30,
+        "pin": "flight_computer:7"
+      }
+    },
+    "microcontrollers": {
+      "flight_computer": {
+        "id": 2,
+        "pin": "telemetry_power_control:9"
+      },
+      "telemetry_power_control": {
+        "id": 3
+      }
+    }
+  }
+]
