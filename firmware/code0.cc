@@ -1,9 +1,5 @@
-#ifdef SIL
-#include "Harness.h"
-namespace code0 {
-#else
-#include "mbed.h"
-#endif
+#include "code_header.h"
+HEADER(0)
 
 #define LED1 10
 
@@ -32,12 +28,4 @@ void loop() {
   }
 }
 
-#ifdef SIL
-} // Close namespace
-#else
-int main() {
-  while(1) {
-    loop();
-  }
-}
-#endif
+FOOTER
