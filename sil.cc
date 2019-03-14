@@ -19,7 +19,7 @@ void (*loops[MCU_LIMIT])() = { code0::loop, code1::loop, code2::loop, code3::loo
 
 int main(int argc, char** argv) {
   if (argc != 2) {
-    cerr << "Invalid arguments: ./" << string(argv[0]) << "[sim_file.json]" << endl;
+    cerr << "Invalid arguments: ./" << string(argv[0]) << " [sim_file.json]" << endl;
     assert(false);
   }
 

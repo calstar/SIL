@@ -1,5 +1,8 @@
 #include "environment.h"
 
+Environment* Environment::global_env = NULL;
+int Environment::current_mcu = 0;
+
 Environment::Environment(string sim_file) {
   ifstream file(sim_file);
   if (!file.good()) {
