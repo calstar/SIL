@@ -4,12 +4,6 @@
 #include "common.h"
 #include "Sensors.h"
 
-namespace code0 { void loop(); }
-// void code1() {}
-// void code2() {}
-// void code3() {}
-// void code4() {}
-
 int64_t micros() {
   assert(global_env != NULL);
 

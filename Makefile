@@ -10,9 +10,10 @@ BUILDDIR = build
 OBJDIR = $(BUILDDIR)/obj
 FIRMWAREDIR = $(BUILDDIR)/stripped-firmware
 
-FIRMWARE = code0 code1 code2 code3 code4
+# TODO: Make firmware a list instead of single path
+# FIRMWARE = code0 code1 code2 code3 code4
 
-SRCS= *.cc includes/*.cc $(addsuffix .cc, $(addprefix $(FIRMWAREDIR)/, $(FIRMWARE)))
+SRCS= *.cc includes/*.cc $(FIRMWAREDIR)/*.cc
 OBJS=$(addprefix $(OBJDIR)/, $(subst .cc,.o,$(SRCS)))
 
 all: clean firmware builddir $(BUILDDIR)/sil
@@ -20,10 +21,12 @@ all: clean firmware builddir $(BUILDDIR)/sil
 	echo $(OBJS)
 
 firmware:
-	for file in $(FIRMWARE); do \
-		test $(file) || error "$(file) is unset" \
-		echo $($(file)) \
-	done
+ 	name = code0
+	outpath = $(FIRMWAREDIR)/$(name).cc
+	$(if $(path),,$(error "path is unset"))
+	echo "namespace $(name) {" > $(outpath)
+	cat $(path) >> $(outpath)
+	echo "}" >> $(outpath)
 
 $(BUILDDIR)/sil: $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BUILDDIR)/sil $(OBJS) $(LDLIBS)

@@ -30,7 +30,7 @@ void (*loops[MCU_LIMIT])();
 
 int main(int argc, char** argv) {
   if (argc != 2) {
-    cerr << "Invalid arguments: ./sil [sim_file.json]" << endl;
+    cerr << "Invalid arguments: ./" << string(argv[0]) << "[sim_file.json]" << endl;
     assert(false);
   }
 
@@ -41,11 +41,11 @@ int main(int argc, char** argv) {
 
   vector<int64_t> code_time(MCU_LIMIT, 0); // Time spent in rocket code in microseconds
 
-  loops[0] = code0::loop;
-  loops[1] = code1::loop;
-  loops[2] = code2::loop;
-  loops[3] = code3::loop;
-  loops[4] = code4::loop;
+  loops[0] = code0::main;
+  loops[1] = code1::main;
+  loops[2] = code2::main;
+  loops[3] = code3::main;
+  loops[4] = code4::main;
 
   // start_timer();
   // code_init();
