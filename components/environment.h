@@ -2,6 +2,13 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <iostream>
+#include "lib/nlohmann/json.hpp"
+
+#include "common.h"
+#include "output.h"
+
+using json = nlohmann::json;
 
 using namespace std;
 

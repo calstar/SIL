@@ -1,19 +1,7 @@
-#ifdef SIL
-#include "Harness.h"
-namespace code2 {
-#else
-#include "mbed.h"
-#endif
+#include "code_header.h"
+HEADER(2)
 
 void loop() {
 }
 
-#ifdef SIL
-} // Close namespace
-#else
-int main() {
-  while(1) {
-    loop();
-  }
-}
-#endif
+FOOTER

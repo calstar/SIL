@@ -1,4 +1,4 @@
-#include "SIL.h"
+#include "sil.h"
 #include <iostream>
 
 chrono::steady_clock::time_point timer;

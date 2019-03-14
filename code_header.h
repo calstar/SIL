@@ -1,6 +1,6 @@
 // Header for SIL and Mbed
 #ifdef SIL
-#include "Harness.h"
+#include "harness.h"
 #define HEADER(ID)  \
 namespace code##ID {
 #else

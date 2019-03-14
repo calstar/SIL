@@ -1,4 +1,4 @@
-#include "Sensors.h"
+#include "sensors.h"
 
 Accelerometer::Accelerometer(Rocket* roc) : roc(roc) {
   currentError = {0,0,0};

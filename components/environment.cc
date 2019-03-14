@@ -1,4 +1,4 @@
-#include "Environment.h"
+#include "environment.h"
 
 Environment::Environment(string sim_file) {
   ifstream file(sim_file);

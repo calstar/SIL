@@ -1,6 +1,6 @@
 #include "common.h"
-#include "Simulator.h"
-#include "Harness.h"
+#include "simulator.h"
+#include "harness.h"
 
 extern Environment* global_env;
 extern int current_mcu;

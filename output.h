@@ -1,6 +1,4 @@
-#ifndef OUTPUT_H
-#define OUTPUT_H
-
+#pragma once
 #include "common.h"
 #include "lib/nlohmann/json.hpp"
 #include <sstream>
@@ -28,5 +26,3 @@ public:
   void update();
   void finish();
 };
-
-#endif

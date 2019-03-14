@@ -2,7 +2,7 @@
 #define SENSORS_H
 
 #include "common.h"
-#include "Simulator.h"
+#include "simulator.h"
 
 class Accelerometer {
   Rocket* roc;

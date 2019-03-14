@@ -1,4 +1,4 @@
-#include "Rocket.h"
+#include "rocket.h"
 
 void Rocket::mapPin(string mapping, bool high, unsigned long val, uint8_t mode, CONNECTION_TYPE ty) {
   for (auto mcu : microcontrollers) {

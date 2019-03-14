@@ -1,8 +1,8 @@
-#include "Simulator.h"
-#include "Output.h"
-#include "Sensors.h"
-#include "Harness.h"
-#include "SIL.h"
+#include "simulator.h"
+#include "output.h"
+#include "sensors.h"
+#include "harness.h"
+#include "sil.h"
 #include <fstream>
 
 Output::Output(json config) {
