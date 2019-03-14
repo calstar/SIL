@@ -3,6 +3,12 @@
 #include "components/environment.h"
 #include "includes/sensors.h"
 
+namespace code0 { void start(); }
+namespace code1 { void start(); }
+namespace code2 { void start(); }
+namespace code3 { void start(); }
+namespace code4 { void start(); }
+
 namespace code0 { void loop(); }
 namespace code1 { void loop(); }
 namespace code2 { void loop(); }

@@ -7,8 +7,13 @@ DigitalOut motor(3);
 DigitalOut drogue(6);
 DigitalOut main_chute(7);
 
-float max_alt = 0;
-bool falling = false;
+float max_alt;
+bool falling;
+
+void start() {
+  max_alt = 0;
+  falling = false;
+}
 
 void loop() {
   motor = 1;
@@ -28,6 +33,7 @@ void loop() {
 }
 
 int main() {
+  start();
   while (1) {
     loop();
   }

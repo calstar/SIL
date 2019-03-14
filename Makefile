@@ -2,7 +2,7 @@ CC=cc
 CXX=clang++
 RM=rm -f
 
-CPPFLAGS= -g -std=c++14 -DSIL
+CPPFLAGS= -g -std=c++14 -DSIL -c -I .
 LDFLAGS= -g
 LDLIBS=
 
@@ -10,10 +10,33 @@ BUILDDIR = build
 OBJDIR = $(BUILDDIR)/obj
 FIRMWAREDIR = $(BUILDDIR)/stripped-firmware
 
-SRCS= $(wildcard *.cc) $(wildcard includes/*.cc) $(wildcard components/*.cc) $(wildcard $(FIRMWAREDIR)/*.cc)
+FILL_EMPTY = 1
+EMPTY_FIRMWARE = sample_firmware/empty.cc
+
+FIRMWARE_SRCS = $(FIRMWAREDIR)/code0.cc $(FIRMWAREDIR)/code1.cc $(FIRMWAREDIR)/code2.cc $(FIRMWAREDIR)/code3.cc $(FIRMWAREDIR)/code4.cc
+SRCS= $(wildcard *.cc) $(wildcard includes/*.cc) $(wildcard components/*.cc) $(FIRMWARE_SRCS)
 OBJS= $(addprefix $(OBJDIR)/, $(subst .cc,.o,$(SRCS)))
 
-all: clean builddir firmware $(BUILDDIR)/sil
+all: builddir firmware $(BUILDDIR)/sil
+
+
+ifneq ($(FILL_EMPTY), 0)
+ifndef code0
+code0 = $(EMPTY_FIRMWARE)
+endif
+ifndef code1
+code1 = $(EMPTY_FIRMWARE)
+endif
+ifndef code2
+code2 = $(EMPTY_FIRMWARE)
+endif
+ifndef code3
+code3 = $(EMPTY_FIRMWARE)
+endif
+ifndef code4
+code4 = $(EMPTY_FIRMWARE)
+endif
+endif
 
 firmware:
 	$(if $(code0),,$(error "code0 is unset"))
@@ -31,7 +54,7 @@ $(BUILDDIR)/sil: $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BUILDDIR)/sil $(OBJS) $(LDLIBS)
 
 $(OBJDIR)/%.o: %.cc
-	$(CXX) $(CPPFLAGS) -c -I . -o $@ $<
+	$(CXX) $(CPPFLAGS) -o $@ $<
 
 builddir:
 	mkdir -p $(BUILDDIR)
