@@ -1,5 +1,5 @@
-#ifndef COMMON_H
-#define COMMON_H
+#pragma once
+
 #define INPUT ((uint8_t)'I')
 #define OUTPUT ((uint8_t)'O')
 #define INPUT_PULLUP ((uint8_t)'P')
@@ -15,6 +15,7 @@
 #include <vector>
 #include <map>
 #include <ostream>
+#include <iostream>
 #include <stdint.h>
 
 #include "config.h"
@@ -37,14 +38,3 @@ ostream& operator<<(ostream& os, const vec& v);
 
 _Noreturn void ERROR();
 _Noreturn void ERROR(string msg);
-
-class Motor;
-class Chute;
-class LED;
-class Microcontroller;
-class Rocket;
-class Environment;
-class Accelerometer;
-class Altimeter;
-
-#endif

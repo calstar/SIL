@@ -1,3 +1,4 @@
+#pragma once
 #define CLOCK_MULTIPLIER (100)
 #define TICK_MICROS (100)
 #define MCU_LIMIT (5)

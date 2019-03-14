@@ -1,8 +1,7 @@
-#ifndef SENSORS_H
-#define SENSORS_H
-
+#pragma once
 #include "common.h"
-#include "simulator.h"
+
+class Rocket; // To resolve circular dependency
 
 class Accelerometer {
   Rocket* roc;
@@ -21,5 +20,3 @@ public:
   Altimeter(Rocket* roc);
   float getData();
 };
-
-#endif

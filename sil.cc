@@ -1,7 +1,6 @@
 #include "sil.h"
-#include <iostream>
 
-chrono::steady_clock::time_point timer;
+chrono::system_clock::time_point timer;
 void start_timer() {
   timer = chrono::high_resolution_clock::now();
 }
@@ -26,7 +25,7 @@ shared_ptr<Rocket> curr_roc() {
 Environment* global_env = NULL;
 int current_mcu = 0;
 
-void (*loops[MCU_LIMIT])();
+void (*loops[MCU_LIMIT])() = { code0::loop, code1::loop, code2::loop, code3::loop, code4::loop };
 
 int main(int argc, char** argv) {
   if (argc != 2) {
@@ -40,12 +39,6 @@ int main(int argc, char** argv) {
   DEBUG_OUT << "Environment loaded" << endl;
 
   vector<int64_t> code_time(MCU_LIMIT, 0); // Time spent in rocket code in microseconds
-
-  loops[0] = code0::main;
-  loops[1] = code1::main;
-  loops[2] = code2::main;
-  loops[3] = code3::main;
-  loops[4] = code4::main;
 
   // start_timer();
   // code_init();

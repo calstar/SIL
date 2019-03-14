@@ -1,5 +1,4 @@
 #include "common.h"
-#include <iostream>
 
 vec operator+(const vec& a, const vec& b) {
   return vec{a.x + b.x, a.y + b.y, a.z + b.z};

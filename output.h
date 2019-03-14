@@ -1,9 +1,11 @@
 #pragma once
 #include "common.h"
+#include "components/rocket.h"
+#include "includes/sensors.h"
+#include "includes/mbed.h"
 #include "lib/nlohmann/json.hpp"
 #include <sstream>
-
-class Environment;
+#include <fstream>
 
 using json = nlohmann::json;
 

@@ -1,4 +1,7 @@
 #pragma once
+#include <string>
+
+using namespace std;
 
 class LED {
   string name;

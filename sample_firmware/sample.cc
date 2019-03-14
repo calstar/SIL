@@ -1,12 +1,11 @@
-#include "code_header.h"
-HEADER(0)
+#include "mbed.h"
 
 #define LED1 10
 
 DigitalOut myled(LED1);
 DigitalOut motor(3);
 DigitalOut drogue(6);
-DigitalOut main(7);
+DigitalOut main_chute(7);
 
 float max_alt = 0;
 bool falling = false;
@@ -28,4 +27,8 @@ void loop() {
   }
 }
 
-FOOTER
+int main() {
+  while (1) {
+    loop();
+  }
+}

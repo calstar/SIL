@@ -1,4 +1,5 @@
 #include "sensors.h"
+#include "components/rocket.h" // To resolve circular dependency
 
 Accelerometer::Accelerometer(Rocket* roc) : roc(roc) {
   currentError = {0,0,0};

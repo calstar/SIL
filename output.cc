@@ -1,9 +1,5 @@
-#include "simulator.h"
 #include "output.h"
-#include "sensors.h"
-#include "harness.h"
-#include "sil.h"
-#include <fstream>
+#include "components/environment.h"
 
 Output::Output(json config) {
   file = config["file"].get<string>();

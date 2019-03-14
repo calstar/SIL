@@ -1,7 +1,8 @@
-#ifndef HARNESS_H
-#define HARNESS_H
-
+#pragma once
 #include "common.h" // TODO: Maybe take this out? We don't want code "seeing" anything it won't in the real MCU
+#include "sil.h"
+#include "common.h"
+#include "sensors.h"
 
 extern int current_mcu;
 
@@ -31,5 +32,3 @@ public:
   DigitalOut& operator= (int value);
   operator int();
 };
-
-#endif

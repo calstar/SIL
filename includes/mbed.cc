@@ -1,8 +1,4 @@
-#include "harness.h"
-#include "simulator.h"
-#include "sil.h"
-#include "common.h"
-#include "sensors.h"
+#include "mbed.h"
 
 int64_t micros() {
   assert(global_env != NULL);

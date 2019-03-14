@@ -2,22 +2,17 @@
 #include <string>
 #include <vector>
 #include "common.h"
+#include "motor.h"
+#include "microcontroller.h"
+#include "chute.h"
+#include "led.h"
+#include "includes/sensors.h"
+#include "lib/nlohmann/json.hpp"
+#include <cassert>
 
 using namespace std;
 
-enum class CONNECTION_TYPE {
-  MOTOR,
-  CHUTE,
-  LED,
-  POWER,
-};
-
-typedef struct {
-  CONNECTION_TYPE type;
-  bool high;
-  unsigned long index;
-  uint8_t mode;
-} pinmapping;
+using json = nlohmann::json;
 
 class Rocket {
 public:

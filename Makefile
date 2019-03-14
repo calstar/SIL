@@ -10,23 +10,22 @@ BUILDDIR = build
 OBJDIR = $(BUILDDIR)/obj
 FIRMWAREDIR = $(BUILDDIR)/stripped-firmware
 
-# TODO: Make firmware a list instead of single path
-# FIRMWARE = code0 code1 code2 code3 code4
+SRCS= $(wildcard *.cc) $(wildcard includes/*.cc) $(wildcard components/*.cc) $(wildcard $(FIRMWAREDIR)/*.cc)
+OBJS= $(addprefix $(OBJDIR)/, $(subst .cc,.o,$(SRCS)))
 
-SRCS= *.cc includes/*.cc $(FIRMWAREDIR)/*.cc
-OBJS=$(addprefix $(OBJDIR)/, $(subst .cc,.o,$(SRCS)))
-
-all: clean firmware builddir $(BUILDDIR)/sil
-	echo $(SRCS)
-	echo $(OBJS)
+all: clean builddir firmware $(BUILDDIR)/sil
 
 firmware:
- 	name = code0
-	outpath = $(FIRMWAREDIR)/$(name).cc
-	$(if $(path),,$(error "path is unset"))
-	echo "namespace $(name) {" > $(outpath)
-	cat $(path) >> $(outpath)
-	echo "}" >> $(outpath)
+	$(if $(code0),,$(error "code0 is unset"))
+	python3 ./process_firmware.py $(FIRMWAREDIR) 0 $(code0)
+	$(if $(code1),,$(error "code1 is unset"))
+	python3 ./process_firmware.py $(FIRMWAREDIR) 1 $(code1)
+	$(if $(code2),,$(error "code2 is unset"))
+	python3 ./process_firmware.py $(FIRMWAREDIR) 2 $(code2)
+	$(if $(code3),,$(error "code3 is unset"))
+	python3 ./process_firmware.py $(FIRMWAREDIR) 3 $(code3)
+	$(if $(code4),,$(error "code4 is unset"))
+	python3 ./process_firmware.py $(FIRMWAREDIR) 4 $(code4)
 
 $(BUILDDIR)/sil: $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BUILDDIR)/sil $(OBJS) $(LDLIBS)

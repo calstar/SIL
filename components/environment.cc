@@ -1,4 +1,5 @@
 #include "environment.h"
+#include "output.h" // Circular
 
 Environment::Environment(string sim_file) {
   ifstream file(sim_file);
