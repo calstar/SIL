@@ -8,12 +8,22 @@ LDLIBS=
 
 BUILDDIR = build
 OBJDIR = $(BUILDDIR)/obj
-FIRMWAREDIR = firmware
+FIRMWAREDIR = $(BUILDDIR)/stripped-firmware
 
-SRCS=Simulator.cc SIL.cc Harness.cc common.cc Output.cc Sensors.cc $(FIRMWAREDIR)/code0.cc $(FIRMWAREDIR)/code1.cc $(FIRMWAREDIR)/code2.cc $(FIRMWAREDIR)/code3.cc $(FIRMWAREDIR)/code4.cc
+FIRMWARE = code0 code1 code2 code3 code4
+
+SRCS= *.cc includes/*.cc $(addsuffix .cc, $(addprefix $(FIRMWAREDIR)/, $(FIRMWARE)))
 OBJS=$(addprefix $(OBJDIR)/, $(subst .cc,.o,$(SRCS)))
 
-all: builddir $(BUILDDIR)/sil
+all: clean firmware builddir $(BUILDDIR)/sil
+	echo $(SRCS)
+	echo $(OBJS)
+
+firmware:
+	for file in $(FIRMWARE); do \
+		test $(file) || error "$(file) is unset" \
+		echo $($(file)) \
+	done
 
 $(BUILDDIR)/sil: $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BUILDDIR)/sil $(OBJS) $(LDLIBS)
@@ -24,7 +34,7 @@ $(OBJDIR)/%.o: %.cc
 builddir:
 	mkdir -p $(BUILDDIR)
 	mkdir -p $(OBJDIR)
-	mkdir -p $(OBJDIR)/$(FIRMWAREDIR)
+	mkdir -p $(FIRMWAREDIR)
 
 depend: .depend
 

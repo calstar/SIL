@@ -2,7 +2,7 @@
 #define OUTPUT_H
 
 #include "common.h"
-#include "nlohmann/json.hpp"
+#include "lib/nlohmann/json.hpp"
 #include <sstream>
 
 class Environment;

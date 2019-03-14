@@ -3,7 +3,7 @@
 #include "SIL.h"
 #include "Sensors.h"
 
-#include "nlohmann/json.hpp"
+#include "lib/nlohmann/json.hpp"
 #include <fstream>
 #include <iostream>
 

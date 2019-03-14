@@ -1,9 +1,4 @@
-#ifdef SIL
-#include "Harness.h"
-namespace code0 {
-#else
 #include "mbed.h"
-#endif
 
 #define LED1 10
 
