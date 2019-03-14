@@ -1,5 +1,4 @@
 #include "environment.h"
-#include "output.h" // Circular
 
 Environment::Environment(string sim_file) {
   ifstream file(sim_file);
@@ -67,6 +66,27 @@ Environment::Environment(string sim_file) {
   max_acceleration = 0;
 }
 
+void Environment::setGlobalEnv(Environment* env) {
+  global_env = env;
+}
+
+void Environment::setCurrentMcu(int mcu) {
+  current_mcu = mcu;
+}
+
+shared_ptr<Rocket> Environment::curr_roc() {
+  for (auto& sect : Environment::global_env->rocket_sections) {
+    for (auto rp : sect) {
+      for (auto mcu : rp->microcontrollers) {
+        if (mcu->id == Environment::current_mcu) {
+          return rp;
+        }
+      }
+    }
+  }
+  ERROR();
+}
+
 bool Environment::done() {
   // TODO: Use timeout
   return landed;
@@ -102,7 +122,7 @@ void Environment::tick() {
     double motor_force = 0;
     for (auto roc : section) {
       for (Motor m : roc->motors) {
-        motor_force += m.getForce();
+        motor_force += m.getForce(this->micros());
       }
     }
     force = force + old_dir * motor_force;
@@ -164,7 +184,7 @@ void Environment::setPin(int mcu_id, int pin, bool high) {
             switch (pmap.type) {
               case CONNECTION_TYPE::MOTOR:
               if (high == true) {
-                roc->motors.at(pmap.index).activate(); // TODO: Maybe set delay on this so super fast writes don't set off the motor
+                roc->motors.at(pmap.index).activate(this->micros()); // TODO: Maybe set delay on this so super fast writes don't set off the motor
               }
               break;
 
@@ -239,7 +259,7 @@ void Environment::pinMode(int mcu_id, int pin, uint8_t mode) {
 
 void Environment::updateOutputs() {
   for (Output& out : outputs) {
-    out.update();
+    out.update(this->micros(), this->rocket_sections);
   }
 }
 

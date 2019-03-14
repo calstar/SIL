@@ -1,10 +1,7 @@
 #pragma once
 #include "common.h" // TODO: Maybe take this out? We don't want code "seeing" anything it won't in the real MCU
-#include "sil.h"
-#include "common.h"
-#include "sensors.h"
-
-extern int current_mcu;
+#include "components/environment.h"
+#include "includes/sensors.h"
 
 namespace code0 { void loop(); }
 namespace code1 { void loop(); }

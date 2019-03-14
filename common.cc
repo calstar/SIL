@@ -33,12 +33,11 @@ ostream& operator<<(ostream& os, const vec& v) {
   return os;
 }
 
-_Noreturn void ERROR() {
+void ERROR() {
   ERROR("Unknown error");
 }
 
-_Noreturn void ERROR(string msg) {
+void ERROR(string msg) {
   cerr << "SIL Failed: " << msg << endl;
   exit(1);
-  __builtin_unreachable();
 }

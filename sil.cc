@@ -1,4 +1,10 @@
-#include "sil.h"
+#include "common.h"
+#include "components/environment.h"
+#include "components/rocket.h"
+#include "includes/mbed.h"
+#include <iostream>
+
+using namespace std;
 
 chrono::system_clock::time_point timer;
 void start_timer() {
@@ -8,22 +14,6 @@ int64_t elapsed() {
   auto diff = chrono::high_resolution_clock::now() - timer;
   return chrono::duration_cast<chrono::microseconds>(diff).count();
 }
-
-shared_ptr<Rocket> curr_roc() {
-  for (auto& sect : global_env->rocket_sections) {
-    for (auto rp : sect) {
-      for (auto mcu : rp->microcontrollers) {
-        if (mcu->id == current_mcu) {
-          return rp;
-        }
-      }
-    }
-  }
-  ERROR();
-}
-
-Environment* global_env = NULL;
-int current_mcu = 0;
 
 void (*loops[MCU_LIMIT])() = { code0::loop, code1::loop, code2::loop, code3::loop, code4::loop };
 
@@ -35,7 +25,7 @@ int main(int argc, char** argv) {
 
   DEBUG_OUT << "Loading environment..." << endl;
   Environment env{string(argv[1])};
-  global_env = &env;
+  Environment::setGlobalEnv(&env);
   DEBUG_OUT << "Environment loaded" << endl;
 
   vector<int64_t> code_time(MCU_LIMIT, 0); // Time spent in rocket code in microseconds
@@ -50,12 +40,12 @@ int main(int argc, char** argv) {
     for (const auto sect : env.rocket_sections) {
       for (auto rp : sect) {
         for (auto mcu : rp->microcontrollers) {
-          current_mcu = mcu->id;
-          if (code_time[current_mcu] / CLOCK_MULTIPLIER < env.micros()) {
-            VERBOSE_OUT << "Running code " << current_mcu << endl;
+          Environment::current_mcu = mcu->id;
+          if (code_time[Environment::current_mcu] / CLOCK_MULTIPLIER < env.micros()) {
+            VERBOSE_OUT << "Running code " << Environment::current_mcu << endl;
             start_timer();
-            loops[current_mcu]();
-            code_time[current_mcu] += elapsed() + CODE_OVERHEAD_PENALTY;
+            loops[Environment::current_mcu]();
+            code_time[Environment::current_mcu] += elapsed() + CODE_OVERHEAD_PENALTY;
             ran_code = true;
           }
         }
@@ -72,5 +62,5 @@ int main(int argc, char** argv) {
   env.finishOutputs();
   DEBUG_OUT << "Finished Simulation" << endl;
   env.summary();
-  global_env = NULL;
+  Environment::setGlobalEnv(NULL);
 }

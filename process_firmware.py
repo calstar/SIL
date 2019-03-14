@@ -14,10 +14,10 @@ with open(filepath) as f:
 
 # Add namespace after includes
 index = 0
-for i, line in enumerate(reversed(lines)):
+for i, line in enumerate(list(lines)):
     if re.match(r"^\s*#include", line):
-        index = len(lines) - i
-        break
+        lines[i] = re.sub(r'^\s*#include\s+"', '#include "includes/', line)
+        index = i + 1
 
 lines.insert(index, f"\nnamespace code{codenum} {{\n\n")
 

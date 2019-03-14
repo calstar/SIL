@@ -22,7 +22,7 @@ void loop() {
   if (falling) {
     drogue = 1;
     if (alt < 200) {
-      main = 1;
+      main_chute = 1;
     }
   }
 }

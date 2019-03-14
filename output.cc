@@ -1,5 +1,4 @@
 #include "output.h"
-#include "components/environment.h"
 
 Output::Output(json config) {
   file = config["file"].get<string>();
@@ -21,17 +20,17 @@ Output::Output(json config) {
   }
 }
 
-void Output::update() {
-  if (global_env->micros() >= lastPoll + frequency) {
-    lastPoll = global_env->micros();
+void Output::update(int64_t time, vector<vector<shared_ptr<Rocket>>>& rocket_sections) {
+  if (time >= lastPoll + frequency) {
+    lastPoll = time;
 
-    csv << global_env->micros();
+    csv << time;
     csv << ", ";
 
     switch (type) {
     case OUTPUTTYPE::ACCELERATION:
       {
-        for (auto& sect : global_env->rocket_sections) {
+        for (auto& sect : rocket_sections) {
           for (auto& rp : sect) {
             vec acc = rp->rocket_acc;
             csv << rp->section_name;
@@ -48,7 +47,7 @@ void Output::update() {
       break;
     case OUTPUTTYPE::ACCELEROMETER:
       {
-        for (auto& sect : global_env->rocket_sections) {
+        for (auto& sect : rocket_sections) {
           for (auto& rp : sect) {
             vec acc = rp->acc->getData();
             csv << rp->section_name;
@@ -65,7 +64,7 @@ void Output::update() {
       break;
     case OUTPUTTYPE::ALTITUDE:
       {
-        for (auto& sect : global_env->rocket_sections) {
+        for (auto& sect : rocket_sections) {
           for (auto& rp : sect) {
             csv << rp->section_name;
             csv << ", ";

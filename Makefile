@@ -37,6 +37,7 @@ builddir:
 	mkdir -p $(BUILDDIR)
 	mkdir -p $(OBJDIR)
 	mkdir -p $(FIRMWAREDIR)
+	$(foreach file,$(dir $(OBJS)),mkdir -p $(file);)
 
 depend: .depend
 

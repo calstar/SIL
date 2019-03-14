@@ -1,7 +1,6 @@
 #include "motor.h"
 
-double Motor::getForce() {
-  assert(global_env != NULL);
+double Motor::getForce(int64_t current) {
   // Thrust curve must not be empty
   assert(this->thrust_curve.size() > 0);
 
@@ -10,7 +9,7 @@ double Motor::getForce() {
     return 0;
   }
 
-  double time = (double)(global_env->micros() - start_time) / 1000000.0;
+  double time = (double)(current - start_time) / 1000000.0;
 
   // if before first entry of thrust curve, return first thrust value
   if (time <= thrust_curve[0].first) {
@@ -69,12 +68,10 @@ Motor::Motor(string motor_file, string motor_name) : name(motor_name) {
   activated = false;
 }
 
-void Motor::activate() {
-  assert(global_env != NULL);
-
+void Motor::activate(int64_t time) {
   if (!activated) {
     DEBUG_OUT << "Motor \"" << name << "\" activated" << endl;
     activated = true;
-    start_time = global_env->micros();
+    start_time = time;
   }
 }

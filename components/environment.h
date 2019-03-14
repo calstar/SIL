@@ -4,14 +4,13 @@
 #include <map>
 #include <iostream>
 #include "lib/nlohmann/json.hpp"
+#include "components/rocket.h"
 #include "common.h"
-#include "rocket.h"
+#include "output.h"
 
 using json = nlohmann::json;
 
 using namespace std;
-
-class Output; // Circular
 
 class Environment {
   vec wind;       // In meters / sec
@@ -27,9 +26,15 @@ class Environment {
   double max_speed;
 
 public:
+  static Environment* global_env;
+  static int current_mcu;
+
   vector<vector<shared_ptr<Rocket>>> rocket_sections;
 
   Environment(string sim_file);
+  static shared_ptr<Rocket> curr_roc();
+  static void setGlobalEnv(Environment* env);
+  static void setCurrentMcu(int mcu);
   bool done();
   void tick();
   int64_t micros();

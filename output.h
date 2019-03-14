@@ -2,7 +2,6 @@
 #include "common.h"
 #include "components/rocket.h"
 #include "includes/sensors.h"
-#include "includes/mbed.h"
 #include "lib/nlohmann/json.hpp"
 #include <sstream>
 #include <fstream>
@@ -25,6 +24,6 @@ class Output {
 
 public:
   Output(json config);
-  void update();
+  void update(int64_t time, vector<vector<shared_ptr<Rocket>>>& rocket_sections);
   void finish();
 };

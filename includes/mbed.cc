@@ -1,18 +1,18 @@
 #include "mbed.h"
 
 int64_t micros() {
-  assert(global_env != NULL);
+  assert(Environment::global_env != NULL);
 
-  return global_env->micros();
+  return Environment::global_env->micros();
 }
 
 void pinMode(int pin, uint8_t mode) {
-  assert(global_env != NULL);
-  global_env->pinMode(current_mcu, pin, mode);
+  assert(Environment::global_env != NULL);
+  Environment::global_env->pinMode(Environment::current_mcu, pin, mode);
 }
 
 vec getAcc() {
-  auto r = curr_roc();
+  auto r = Environment::curr_roc();
   assert(r->acc != NULL);
   return r->acc->getData();
 }
@@ -30,7 +30,7 @@ float getAccZ() {
 }
 
 float getAltitude() {
-  auto r = curr_roc();
+  auto r = Environment::curr_roc();
   assert(r->alt != NULL);
   return r->alt->getData();
 }
@@ -38,15 +38,15 @@ float getAltitude() {
 DigitalOut::DigitalOut(int pin) : pin(pin) { }
 
 void DigitalOut::write(int value) {
-  assert(global_env != NULL);
+  assert(Environment::global_env != NULL);
   pinMode(pin, OUTPUT);
-  global_env->setPin(current_mcu, pin, value);
+  Environment::global_env->setPin(Environment::current_mcu, pin, value);
 }
 
 int DigitalOut::read() {
-  assert(global_env != NULL);
+  assert(Environment::global_env != NULL);
   pinMode(pin, OUTPUT);
-  return global_env->getPin(current_mcu, pin);
+  return Environment::global_env->getPin(Environment::current_mcu, pin);
 }
 
 DigitalOut& DigitalOut::operator=(int value) {
