@@ -1,34 +1,38 @@
 #include "common.h"
 
-vec operator+(const vec& a, const vec& b) {
-  return vec{a.x + b.x, a.y + b.y, a.z + b.z};
+vec::vec() : vec(0, 0, 0) {}
+
+vec::vec(double x, double y, double z) : x(x), y(y), z(z) {}
+
+vec vec::operator+(const vec& b) {
+  return vec{this->x + b.x, this->y + b.y, this->z + b.z};
 }
 
-vec operator-(const vec& a, const vec& b) {
-  return vec{a.x - b.x, a.y - b.y, a.z - b.z};
+vec vec::operator-(const vec& b) {
+  return vec{this->x - b.x, this->y - b.y, this->z - b.z};
 }
 
-vec operator*(const vec& a, const double& b) {
-  return vec{a.x * b, a.y * b, a.z * b};
+vec vec::operator*(const double& b) {
+  return vec{this->x * b, this->y * b, this->z * b};
 }
 
-vec operator/(const vec& a, const double& b) {
-  return vec{a.x / b, a.y / b, a.z / b};
+vec vec::operator/(const double& b) {
+  return vec{this->x / b, this->y / b, this->z / b};
 }
 
-vec norm(vec v) {
-  double m = mag(v);
+vec vec::norm() {
+  double m = this->mag();
   if (m == 0) {
-    return v;
+    return *this;
   }
-  return v / m;
+  return *this / m;
 }
 
-double mag(vec v) {
-  return sqrt(pow(v.x, 2) + pow(v.y, 2) + pow(v.z, 2));
+double vec::mag() {
+  return sqrt(pow(this->x, 2) + pow(this->y, 2) + pow(this->z, 2));
 }
 
-ostream& operator<<(ostream& os, const vec& v) {
+ostream& operator<<(ostream& os, vec& v) {
   os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
   return os;
 }

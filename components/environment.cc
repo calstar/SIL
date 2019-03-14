@@ -119,7 +119,7 @@ void Environment::tick() {
 
     vec effective_wind = wind - old_vel;
 
-    vec wind_force = norm(effective_wind) * (AIR_DENSITY * AIR_DRAG_COEF * drag * pow(mag(effective_wind), 2) / 2.0);
+    vec wind_force = effective_wind.norm() * (AIR_DENSITY * AIR_DRAG_COEF * drag * pow(effective_wind.mag(), 2) / 2.0);
     force = force + wind_force;
 
     double motor_force = 0;
@@ -139,7 +139,7 @@ void Environment::tick() {
       new_pos.z = groundHeight;
 
       if (new_vel.z < -0.1) {
-        double speed = mag(new_vel);
+        double speed = new_vel.mag();
         DEBUG_OUT << "Rocket landed at height " << new_pos.z << " at " << speed << " m/s" << endl;
         landed = true;
       }
@@ -155,8 +155,8 @@ void Environment::tick() {
       roc->rocket_pos = new_pos;
     }
 
-    max_acceleration = max(mag(acc), max_acceleration);
-    max_speed = max(mag(new_vel), max_speed);
+    max_acceleration = max(acc.mag(), max_acceleration);
+    max_speed = max(new_vel.mag(), max_speed);
     max_altitude = max(new_pos.z, max_altitude);
 
     VERBOSE_OUT << "Time: " << time << "  Rocket pos: " << new_pos << "  Acc: " << acc << endl;

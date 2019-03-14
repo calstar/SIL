@@ -1,16 +1,7 @@
 #pragma once
-#include <vector>
-#include <string>
-#include <map>
-#include <iostream>
-#include "lib/nlohmann/json.hpp"
 #include "components/rocket.h"
 #include "common.h"
 #include "output.h"
-
-using json = nlohmann::json;
-
-using namespace std;
 
 class Environment {
   vec wind;       // In meters / sec

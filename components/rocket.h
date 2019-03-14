@@ -1,18 +1,10 @@
 #pragma once
-#include <string>
-#include <vector>
 #include "common.h"
 #include "motor.h"
 #include "microcontroller.h"
 #include "chute.h"
 #include "led.h"
 #include "includes/sensors.h"
-#include "lib/nlohmann/json.hpp"
-#include <cassert>
-
-using namespace std;
-
-using json = nlohmann::json;
 
 class Rocket {
 public:

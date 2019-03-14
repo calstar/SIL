@@ -2,9 +2,6 @@
 #include "components/environment.h"
 #include "components/rocket.h"
 #include "includes/mbed.h"
-#include <iostream>
-
-using namespace std;
 
 chrono::high_resolution_clock::time_point timer;
 void start_timer() {

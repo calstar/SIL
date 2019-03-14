@@ -2,11 +2,6 @@
 #include "common.h"
 #include "components/rocket.h"
 #include "includes/sensors.h"
-#include "lib/nlohmann/json.hpp"
-#include <sstream>
-#include <fstream>
-
-using json = nlohmann::json;
 
 enum class OUTPUTTYPE {
   ACCELERATION,
