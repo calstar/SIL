@@ -6,7 +6,7 @@
 
 using namespace std;
 
-chrono::system_clock::time_point timer;
+chrono::high_resolution_clock::time_point timer;
 void start_timer() {
   timer = chrono::high_resolution_clock::now();
 }
@@ -15,11 +15,12 @@ int64_t elapsed() {
   return chrono::duration_cast<chrono::microseconds>(diff).count();
 }
 
+void (*starts[MCU_LIMIT])() = { code0::start, code1::start, code2::start, code3::start, code4::start };
 void (*loops[MCU_LIMIT])() = { code0::loop, code1::loop, code2::loop, code3::loop, code4::loop };
 
 int main(int argc, char** argv) {
   if (argc != 2) {
-    cerr << "Invalid arguments: ./" << string(argv[0]) << " [sim_file.json]" << endl;
+    cerr << "Invalid arguments: ./" << string(argv[0]) << "[sim_file.json]" << endl;
     assert(false);
   }
 
@@ -28,6 +29,7 @@ int main(int argc, char** argv) {
   Environment::setGlobalEnv(&env);
   DEBUG_OUT << "Environment loaded" << endl;
 
+  vector<bool> code_started(MCU_LIMIT, false);
   vector<int64_t> code_time(MCU_LIMIT, 0); // Time spent in rocket code in microseconds
 
   // start_timer();
@@ -44,7 +46,12 @@ int main(int argc, char** argv) {
           if (code_time[Environment::current_mcu] / CLOCK_MULTIPLIER < env.micros()) {
             VERBOSE_OUT << "Running code " << Environment::current_mcu << endl;
             start_timer();
-            loops[Environment::current_mcu]();
+            if (code_started[Environment::current_mcu]) {
+              loops[Environment::current_mcu]();
+            } else {
+              starts[Environment::current_mcu]();
+              code_started[Environment::current_mcu] = true;
+            }
             code_time[Environment::current_mcu] += elapsed() + CODE_OVERHEAD_PENALTY;
             ran_code = true;
           }

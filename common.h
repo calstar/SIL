@@ -36,5 +36,5 @@ vec norm(vec v);
 double mag(vec v);
 ostream& operator<<(ostream& os, const vec& v);
 
-void ERROR();
-void ERROR(string msg);
+void ERROR() __attribute__((__noreturn__));
+void ERROR(string msg) __attribute__((__noreturn__));

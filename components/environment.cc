@@ -70,11 +70,11 @@ Environment::Environment(string sim_file) {
 }
 
 void Environment::setGlobalEnv(Environment* env) {
-  global_env = env;
+  Environment::global_env = env;
 }
 
 void Environment::setCurrentMcu(int mcu) {
-  current_mcu = mcu;
+  Environment::current_mcu = mcu;
 }
 
 shared_ptr<Rocket> Environment::curr_roc() {
