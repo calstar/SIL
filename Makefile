@@ -2,7 +2,7 @@ CC=cc
 CXX=clang++
 RM=rm -f
 
-CPPFLAGS= -g -std=c++14 -DSIL -c -I .
+CPPFLAGS= -g -std=c++14 -DSIL -c -I src
 LDFLAGS= -g
 LDLIBS=
 
@@ -13,7 +13,7 @@ FIRMWAREDIR = $(BUILDDIR)/stripped-firmware
 EMPTY_FW_FILE = ./sample_firmware/empty.cc
 CODEFILES = code0 code1 code2 code3 code4
 
-SRCS= $(wildcard *.cc) $(wildcard includes/*.cc) $(wildcard components/*.cc) $(wildcard components/controlled/*.cc) $(addprefix $(FIRMWAREDIR)/,$(addsuffix .cc,$(CODEFILES)))
+SRCS= $(shell find src -type f -name '*.cc') $(addprefix $(FIRMWAREDIR)/,$(addsuffix .cc,$(CODEFILES)))
 OBJS= $(addprefix $(OBJDIR)/, $(subst .cc,.o,$(SRCS)))
 
 all: builddir $(CODEFILES) $(BUILDDIR)/sil

@@ -1,10 +1,10 @@
 #pragma once
 #include "common.h"
-#include "components/controlled/motor.h"
+#include "pin_components/motor.h"
 #include "components/microcontroller.h"
-#include "components/controlled/chute.h"
-#include "components/controlled/led.h"
-#include "components/controlled/pinComponent.h"
+#include "pin_components/chute.h"
+#include "pin_components/led.h"
+#include "pin_components/pinComponent.h"
 #include "includes/sensors.h"
 
 class Rocket {
