@@ -66,5 +66,5 @@ int main(int argc, char** argv) {
   env.finishOutputs();
   DEBUG_OUT << "Finished Simulation" << endl;
   env.summary();
-  Environment::setGlobalEnv(NULL);
+  Environment::setGlobalEnv(nullptr);
 }

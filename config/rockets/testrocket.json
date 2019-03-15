@@ -4,8 +4,12 @@
     "weight": 5,
     "drag_area": 0.02,
     "leds": {
-      "led1": "flight_computer:10",
-      "led2": "flight_computer:11"
+      "led1": {
+        "pin": "flight_computer:10"
+      },
+      "led2": {
+        "pin": "flight_computer:11"
+      }
     },
     "motors": {
       "booster": {
@@ -44,8 +48,12 @@
     "weight": 0.67,
     "drag_area": 0.02,
     "leds": {
-      "led1": "flight_computer:10",
-      "led2": "flight_computer:11"
+      "led1": {
+        "pin": "flight_computer:10"
+      },
+      "led2": {
+        "pin": "flight_computer:11"
+      }
     },
     "motors": {
       "sustainer": {

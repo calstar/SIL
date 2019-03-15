@@ -1,7 +1,6 @@
 #include "environment.h"
 
-Environment* Environment::global_env = NULL;
-int Environment::current_mcu = 0;
+Environment* Environment::global_env = nullptr;
 
 Environment::Environment(string sim_file) {
   ifstream file(sim_file);
@@ -37,29 +36,18 @@ Environment::Environment(string sim_file) {
   assert(!rocket_file.fail());
   json rocket_json;
   rocket_file >> rocket_json;
-  vector<shared_ptr<Rocket>> main_section;
+  set<shared_ptr<Rocket>> main_section;
 
   for (json rocket_section : rocket_json) {
     auto r = make_shared<Rocket>(rocket_section);
     DEBUG_OUT << "Loaded section \"" << r->section_name << "\"" << endl;
 
-    r->rocket_pos.x = 0;
-    r->rocket_pos.y = 0;
-    r->rocket_pos.z = groundHeight;
+    r->rocket_pos = vec(0, 0, groundHeight);
+    r->rocket_vel = vec(0, 0, 0);
+    r->rocket_acc = vec(0, 0, -9.81);
+    r->rocket_dir = vec(0, 0, 1);
 
-    r->rocket_vel.x = 0;
-    r->rocket_vel.y = 0;
-    r->rocket_vel.z = 0;
-
-    r->rocket_acc.x = 0;
-    r->rocket_acc.y = 0;
-    r->rocket_acc.z = -9.81;
-
-    r->rocket_dir.x = 0;
-    r->rocket_dir.y = 0;
-    r->rocket_dir.z = 1;
-
-    main_section.push_back(r);
+    main_section.insert(r);
   }
   rocket_sections.push_back(main_section);
   DEBUG_OUT << "Rocket loaded" << endl;
@@ -71,23 +59,6 @@ Environment::Environment(string sim_file) {
 
 void Environment::setGlobalEnv(Environment* env) {
   Environment::global_env = env;
-}
-
-void Environment::setCurrentMcu(int mcu) {
-  Environment::current_mcu = mcu;
-}
-
-shared_ptr<Rocket> Environment::curr_roc() {
-  for (auto& sect : Environment::global_env->rocket_sections) {
-    for (auto rp : sect) {
-      for (auto mcu : rp->microcontrollers) {
-        if (mcu->id == Environment::current_mcu) {
-          return rp;
-        }
-      }
-    }
-  }
-  ERROR();
 }
 
 bool Environment::done() {
@@ -106,9 +77,9 @@ void Environment::tick() {
     vec acc{0, 0, -9.81}; // m/s
     vec force{0, 0, 0}; // N
 
-    vec old_vel = section[0]->rocket_vel;
-    vec old_pos = section[0]->rocket_pos;
-    vec old_dir = section[0]->rocket_dir;
+    vec old_vel = (*section.begin())->rocket_vel;
+    vec old_pos = (*section.begin())->rocket_pos;
+    vec old_dir = (*section.begin())->rocket_dir;
 
     double weight = 0; // kg
     double drag = 0;

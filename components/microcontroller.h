@@ -1,28 +1,22 @@
 #pragma once
-#include <string>
-#include <map>
+#include "common.h"
+#include "components/controlled/pinComponent.h"
 
-using namespace std;
-
-enum class CONNECTION_TYPE {
-  MOTOR,
-  CHUTE,
-  LED,
-  POWER,
+struct PinMapping {
+  shared_ptr<PinComponent> component;
+  bool value;
 };
 
-typedef struct {
-  CONNECTION_TYPE type;
-  bool high;
-  unsigned long index;
-  uint8_t mode;
-} pinmapping;
-
 class Microcontroller {
-public:
-  string name;
-  int id;
-  map<int, pinmapping> pin_map;
+  private:
+    map<int, PinMapping> pinMap;
 
-  Microcontroller(string name, int id);
+  public:
+    string name;
+    int id;
+
+    Microcontroller(string name, int id);
+
+    void mapPin(int index, PinMapping mapping);
+    void setPin(int64_t time, int index, bool value);
 };

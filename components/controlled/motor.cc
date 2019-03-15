@@ -5,7 +5,7 @@ double Motor::getForce(int64_t current) {
   assert(this->thrust_curve.size() > 0);
 
   // Return 0 if not started
-  if (!activated) {
+  if (!isActivated) {
     return 0;
   }
 
@@ -46,7 +46,7 @@ double Motor::getForce(int64_t current) {
   ERROR("Motor has unknown interpolation");
 }
 
-Motor::Motor(string motor_file, string motor_name) : name(motor_name) {
+Motor::Motor(string motor_file, string motor_name) : name(motor_name), PinComponent() {
   // open file stream
   ifstream file(motor_file);
   assert(!file.fail());
@@ -64,14 +64,12 @@ Motor::Motor(string motor_file, string motor_name) : name(motor_name) {
     double force = it.value();
     thrust_curve.push_back(make_pair(time, force));
   }
-
-  activated = false;
 }
 
 void Motor::activate(int64_t time) {
   if (!activated) {
     DEBUG_OUT << "Motor \"" << name << "\" activated" << endl;
-    activated = true;
+    isActivated = true;
     start_time = time;
   }
 }

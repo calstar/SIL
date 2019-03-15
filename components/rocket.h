@@ -1,12 +1,16 @@
 #pragma once
 #include "common.h"
-#include "motor.h"
-#include "microcontroller.h"
-#include "chute.h"
-#include "led.h"
+#include "components/controlled/motor.h"
+#include "components/microcontroller.h"
+#include "components/controlled/chute.h"
+#include "components/controlled/led.h"
+#include "components/controlled/pinComponent.h"
 #include "includes/sensors.h"
 
 class Rocket {
+private:
+  void mapPin(string mapping, PinComponent* component);
+
 public:
   string section_name;
   double rocket_weight;
@@ -16,15 +20,14 @@ public:
   vec rocket_acc;  // In meters / sec^2. Recalculated every tick, used mainly for logging
   vec rocket_dir;  // = rocket_speed / |rocket_speed|?
                    // At the moment yes, but if the simulator gets more advanced then this will not always be the case. -Leo
-  vector<Motor> motors;
-  vector<Chute> chutes;
-  vector<LED> leds;
+  vector<shared_ptr<Motor>> motors;
+  vector<shared_ptr<Chute>> chutes;
+  vector<shared_ptr<LED>> leds;
   vector<shared_ptr<Microcontroller>> microcontrollers;
 
   Accelerometer* acc;
   Altimeter* alt;
 
-  void mapPin(string mapping, bool high, unsigned long val, uint8_t mode, CONNECTION_TYPE ty);
   double getDrag();
   Rocket(json rocket_json);
 };

@@ -17,10 +17,6 @@ namespace code4 { void loop(); }
 
 int64_t micros();
 
-// void pinMode(int pin, uint8_t mode);
-// int digitalRead(int pin);
-// void digitalWrite(int pin, bool high);
-
 float getAccX();
 float getAccY();
 float getAccZ();
