@@ -11,3 +11,6 @@
 
 // #define VERBOSE_OUT cout
 #define VERBOSE_OUT if (0) cout
+
+#define PRINT_OUT cout
+// #define PRINT_OUT if (0) cout

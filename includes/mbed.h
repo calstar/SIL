@@ -2,7 +2,7 @@
 #include "common.h" // TODO: Maybe take this out? We don't want code "seeing" anything it won't in the real MCU
 #include "components/environment.h"
 #include "includes/sensors.h"
-#include "includes/flatbuffers.h"
+#include "flatbuffers/flatbuffers.h"
 
 namespace code0 { void start(); }
 namespace code1 { void start(); }
@@ -31,6 +31,7 @@ float getAltitude();
 
 class DigitalOut {
   int pin;
+  int current_value;
 public:
   DigitalOut(int pin);
   void write(int value);
@@ -40,15 +41,21 @@ public:
 };
 
 class Timer {
+  int64_t start_time;
 public:
   void start();
   us_timestamp_t read_high_resolution_us();
 };
 
 class Serial {
+  int rxpin;
+  int txpin;
 public:
-  Serial(int rx, int tx);
+  Serial(int tx, int rx);
   void baud(int rate);
   void set_blocking(bool blocking);
-  void printf(char* msg);
+  void printf(const char* format, ...);
+  void write(uint8_t* buf, int len, void* callback);
+  bool readable();
+  char getc();
 };

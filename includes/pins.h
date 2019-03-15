@@ -21,3 +21,4 @@
 #define BP6_CONT   21
 #define BP7_IGNITE 22
 #define BP7_CONT   23
+#define FC_SWITCH  24

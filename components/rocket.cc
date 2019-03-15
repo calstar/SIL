@@ -23,11 +23,22 @@ Rocket::Rocket(json rocket_json) {
   assert(rocket_json.count("name") == 1);
   section_name = rocket_json["name"].get<string>();
 
+
+
   // Add microcontrollers
+  vector<tuple<string, bool, unsigned long, uint8_t, CONNECTION_TYPE>> to_map; // Wait until everything is added to map these
   if (rocket_json.count("microcontrollers") != 0) {
     for (auto it = rocket_json["microcontrollers"].begin(); it != rocket_json["microcontrollers"].end(); ++it) {
       microcontrollers.push_back(make_shared<Microcontroller>(it.key(), it.value()["id"].get<int>()));
+      if (it.value().count("pin") != 0) {
+        string powerpin = it.value()["pin"].get<string>();
+        microcontrollers[microcontrollers.size() - 1]->powered = false;
+        to_map.push_back({powerpin, false, microcontrollers.size() - 1, PIN_UNDEFINED, CONNECTION_TYPE::POWER});
+      }
     }
+  }
+  for (auto m : to_map) {
+    mapPin(get<0>(m), get<1>(m), get<2>(m), get<3>(m), get<4>(m));
   }
 
   // Add all motors
@@ -57,6 +68,32 @@ Rocket::Rocket(json rocket_json) {
     for (auto it = rocket_json["leds"].begin(); it != rocket_json["leds"].end(); ++it) {
       leds.emplace_back(it.key());
       mapPin(it.value(), false, leds.size() - 1, PIN_UNDEFINED, CONNECTION_TYPE::LED);
+    }
+  }
+
+  // Connect serial ports
+  if (rocket_json.count("communications") != 0) {
+    for (auto p : rocket_json["communications"]) {
+      serials.emplace_back();
+      if (p[0] == "SIL_INPUT") {
+        serials[serials.size() - 1].sil_input = true;
+        string mapping = p[1];
+        bool found = false;
+        for (auto mcu : microcontrollers) {
+          if (mapping.substr(0, mapping.find_first_of(":")) == mcu->name) {
+            mcu->serial_in = &serials[serials.size() - 1];
+            found = true;
+          }
+        }
+        if (!found) ERROR("MCU not found");
+      } else {
+        mapPin(p[0], false, serials.size() - 1, PIN_UNDEFINED, CONNECTION_TYPE::SERIAL_TX);
+      }
+      if (p[1] == "SIL_OUTPUT") {
+        serials[serials.size() - 1].sil_output = true;
+      } else {
+        mapPin(p[1], false, serials.size() - 1, PIN_UNDEFINED, CONNECTION_TYPE::SERIAL_RX);
+      }
     }
   }
 

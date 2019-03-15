@@ -2,7 +2,7 @@ CC=cc
 CXX=clang++
 RM=rm -f
 
-CPPFLAGS= -g -std=c++14 -DSIL -c -I .
+CPPFLAGS= -g -std=c++14 -DSIL -c -I . -I includes -I lib
 LDFLAGS= -g
 LDLIBS=
 
@@ -16,10 +16,13 @@ CODEFILES = code0 code1 code2 code3 code4
 SRCS= $(wildcard *.cc) $(wildcard includes/*.cc) $(wildcard components/*.cc) $(addprefix $(FIRMWAREDIR)/,$(addsuffix .cc,$(CODEFILES)))
 OBJS= $(addprefix $(OBJDIR)/, $(subst .cc,.o,$(SRCS)))
 
-all: builddir $(CODEFILES) $(BUILDDIR)/sil
+all: builddir $(CODEFILES) $(BUILDDIR)/sil $(BUILDDIR)/terminal
 
 $(BUILDDIR)/sil: $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BUILDDIR)/sil $(OBJS) $(LDLIBS)
+
+$(BUILDDIR)/terminal: tools/terminal.cc
+	$(CXX) -o $@ $<
 
 $(OBJDIR)/%.o: %.cc
 	$(CXX) $(CPPFLAGS) -o $@ $<

@@ -1,3 +1,5 @@
 #include "microcontroller.h"
 
-Microcontroller::Microcontroller(string name, int id) : name(name), id(id) { }
+Microcontroller::Microcontroller(string name, int id) : name(name), id(id) {
+  powered = true;
+}

@@ -13,7 +13,7 @@
 #include <stdint.h>
 
 #include "config.h"
-#include "lib/nlohmann/json.hpp" 
+#include "lib/nlohmann/json.hpp"
 
 using namespace std;
 using json = nlohmann::json;

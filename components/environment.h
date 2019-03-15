@@ -1,7 +1,16 @@
 #pragma once
+#include <vector>
+#include <string>
+#include <map>
+#include <iostream>
+#include "lib/nlohmann/json.hpp"
 #include "components/rocket.h"
 #include "common.h"
 #include "output.h"
+
+using json = nlohmann::json;
+
+using namespace std;
 
 class Environment {
   vec wind;       // In meters / sec
@@ -24,6 +33,7 @@ public:
 
   Environment(string sim_file);
   static shared_ptr<Rocket> curr_roc();
+  static shared_ptr<Microcontroller> curr_mcu_ptr();
   static void setGlobalEnv(Environment* env);
   static void setCurrentMcu(int mcu);
   bool done();

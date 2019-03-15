@@ -90,6 +90,19 @@ shared_ptr<Rocket> Environment::curr_roc() {
   ERROR();
 }
 
+shared_ptr<Microcontroller> Environment::curr_mcu_ptr() {
+  for (auto& sect : Environment::global_env->rocket_sections) {
+    for (auto rp : sect) {
+      for (auto mcu : rp->microcontrollers) {
+        if (mcu->id == Environment::current_mcu) {
+          return mcu;
+        }
+      }
+    }
+  }
+  ERROR();
+}
+
 bool Environment::done() {
   // TODO: Use timeout
   return landed;
@@ -199,6 +212,10 @@ void Environment::setPin(int mcu_id, int pin, bool high) {
 
               case CONNECTION_TYPE::LED:
               roc->leds.at(pmap.index).set(high); // TODO: Maybe set delay on this so super fast writes don't set off the black powder
+              break;
+
+              case CONNECTION_TYPE::POWER:
+              roc->microcontrollers.at(pmap.index)->powered = high;
               break;
 
               default:

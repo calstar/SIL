@@ -4,6 +4,7 @@
 #include "microcontroller.h"
 #include "chute.h"
 #include "led.h"
+#include "silserial.h"
 #include "includes/sensors.h"
 
 class Rocket {
@@ -19,6 +20,7 @@ public:
   vector<Motor> motors;
   vector<Chute> chutes;
   vector<LED> leds;
+  vector<SILSerial> serials;
   vector<shared_ptr<Microcontroller>> microcontrollers;
 
   Accelerometer* acc;

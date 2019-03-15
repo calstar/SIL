@@ -1,0 +1,119 @@
+#include <vector>
+
+namespace flatbuffers {
+
+  typedef uint32_t uoffset_t;
+  template<typename T> struct Offset {
+    uoffset_t o;
+    Offset() : o(0) {}
+    Offset(uoffset_t _o) : o(_o) {}
+    Offset<void> Union() const { return Offset<void>(o); }
+    bool IsNull() const { return !o; }
+  };
+
+  class FlatBufferBuilder {
+  public:
+    FlatBufferBuilder(size_t initial_size = 1024);
+    uint8_t* GetBufferPointer();
+    int GetSize();
+    template<typename T> void Finish(Offset<T> root);
+  };
+
+  template <class T>
+  class Vector {
+  public:
+    T Get(int i) const;
+  };
+
+  class Verifier {
+  public:
+    Verifier(uint8_t* buf, int len);
+  };
+}
+
+namespace Calstar {
+  enum UplinkType {
+    UplinkType_FCOn = 0,
+    UplinkType_FCOff = 1,
+    UplinkType_BlackPowderOn = 2,
+    UplinkType_BlackPowderOff = 3,
+    UplinkType_MIN = UplinkType_FCOn,
+    UplinkType_MAX = UplinkType_BlackPowderOff
+  };
+
+  enum FCState {
+    FCState_Pad = 0,
+    FCState_Flight = 1,
+    FCState_MIN = FCState_Pad,
+    FCState_MAX = FCState_Flight
+  };
+
+  struct FCUpdateMsg {
+
+  };
+
+  struct UplinkMsg {
+    UplinkType Type() const;
+    flatbuffers::Vector<uint8_t>* BP() const;
+  };
+
+  bool VerifyUplinkMsgBuffer(flatbuffers::Verifier &verifier);
+  UplinkMsg* GetUplinkMsg(const void *buf);
+  inline flatbuffers::Offset<FCUpdateMsg> CreateFCUpdateMsg(
+      flatbuffers::FlatBufferBuilder &_fbb,
+      FCState State = FCState_Pad,
+      float AccelX = 0.0f,
+      float AccelY = 0.0f,
+      float AccelZ = 0.0f,
+      float MagX = 0.0f,
+      float MagY = 0.0f,
+      float MagZ = 0.0f,
+      float GyroX = 0.0f,
+      float GyroY = 0.0f,
+      float GyroZ = 0.0f,
+      float Altitude = 0.0f,
+      float Pressure = 0.0f,
+      bool BP1Continuity = false,
+      bool BP1Ignited = false,
+      bool BP2Continuity = false,
+      bool BP2Ignited = false,
+      bool BP3Continuity = false,
+      bool BP3Ignited = false,
+      bool BP4Continuity = false,
+      bool BP4Ignited = false,
+      bool BP5Continuity = false,
+      bool BP5Ignited = false,
+      bool BP6Continuity = false,
+      bool BP6Ignited = false,
+      bool BP7Continuity = false,
+      bool BP7Ignited = false) {
+    FCUpdateMsgBuilder builder_(_fbb);
+    builder_.add_Pressure(Pressure);
+    builder_.add_Altitude(Altitude);
+    builder_.add_GyroZ(GyroZ);
+    builder_.add_GyroY(GyroY);
+    builder_.add_GyroX(GyroX);
+    builder_.add_MagZ(MagZ);
+    builder_.add_MagY(MagY);
+    builder_.add_MagX(MagX);
+    builder_.add_AccelZ(AccelZ);
+    builder_.add_AccelY(AccelY);
+    builder_.add_AccelX(AccelX);
+    builder_.add_BP7Ignited(BP7Ignited);
+    builder_.add_BP7Continuity(BP7Continuity);
+    builder_.add_BP6Ignited(BP6Ignited);
+    builder_.add_BP6Continuity(BP6Continuity);
+    builder_.add_BP5Ignited(BP5Ignited);
+    builder_.add_BP5Continuity(BP5Continuity);
+    builder_.add_BP4Ignited(BP4Ignited);
+    builder_.add_BP4Continuity(BP4Continuity);
+    builder_.add_BP3Ignited(BP3Ignited);
+    builder_.add_BP3Continuity(BP3Continuity);
+    builder_.add_BP2Ignited(BP2Ignited);
+    builder_.add_BP2Continuity(BP2Continuity);
+    builder_.add_BP1Ignited(BP1Ignited);
+    builder_.add_BP1Continuity(BP1Continuity);
+    builder_.add_State(State);
+    return builder_.Finish();
+  }
+}
