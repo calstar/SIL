@@ -16,7 +16,7 @@ CODEFILES = code0 code1 code2 code3 code4
 SRCS= $(wildcard *.cc) $(wildcard includes/*.cc) $(wildcard components/*.cc) $(addprefix $(FIRMWAREDIR)/,$(addsuffix .cc,$(CODEFILES)))
 OBJS= $(addprefix $(OBJDIR)/, $(subst .cc,.o,$(SRCS)))
 
-all: $(CODEFILES) builddir $(BUILDDIR)/sil
+all: builddir $(CODEFILES) $(BUILDDIR)/sil
 
 $(BUILDDIR)/sil: $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BUILDDIR)/sil $(OBJS) $(LDLIBS)
