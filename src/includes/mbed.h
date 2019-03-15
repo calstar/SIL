@@ -17,6 +17,7 @@ namespace code4 { void loop(); }
 
 typedef int64_t us_timestamp_t;
 
+void wait(float s);
 int64_t micros();
 
 float getAccX();
@@ -35,8 +36,15 @@ public:
 };
 
 class Timer {
+  us_timestamp_t previous;
+  us_timestamp_t startTime;
+  bool running;
+
 public:
+  Timer();
   void start();
+  void reset();
+  void stop();
   us_timestamp_t read_high_resolution_us();
 };
 

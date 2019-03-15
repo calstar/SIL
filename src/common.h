@@ -11,6 +11,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <thread>
 #include <stdint.h>
 
 #include "config.h"

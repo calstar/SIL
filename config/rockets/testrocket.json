@@ -13,8 +13,7 @@
     },
     "motors": {
       "booster": {
-        "file": "config/motors/aerotech_j800t.json",
-        "pin": "flight_computer:3"
+        "file": "config/motors/aerotech_j800t.json"
       }
     },
     "separators": {

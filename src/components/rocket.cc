@@ -30,7 +30,12 @@ Rocket::Rocket(json config) {
   // Add all motors
   for (auto& it : config["motors"].items()) {
       motors.emplace_back(make_shared<Motor>(it.value()["file"], it.key()));
-      mapPin(it.value()["pin"], motors.back());
+      if (it.value().find("pin") != it.value().end()) {
+          mapPin(it.value()["pin"], motors.back());
+      } else {
+          // Turns on the motor at the start if there's no pin set
+          motors.back()->activate(0);
+      }
   }
   if (motors.size() == 0) {
     DEBUG_OUT << "WARNING: No motors in section: " << section_name << endl;
