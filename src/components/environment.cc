@@ -61,14 +61,14 @@ void Environment::tick() {
     vec acc{0, 0, -9.81}; // m/s
     vec force{0, 0, 0}; // N
 
-    vec old_vel = (*section.begin())->rocket_vel;
-    vec old_pos = (*section.begin())->rocket_pos;
-    vec old_dir = (*section.begin())->rocket_dir;
+    vec old_vel = (*section.begin())->vel;
+    vec old_pos = (*section.begin())->pos;
+    vec old_dir = (*section.begin())->dir;
 
     double weight = 0; // kg
     double drag = 0;
     for (auto roc : section) {
-      weight += roc->rocket_weight;
+      weight += roc->weight;
       drag = max(drag, roc->getDrag());
     }
 
@@ -103,9 +103,9 @@ void Environment::tick() {
     }
 
     for (auto roc : section) {
-      roc->rocket_acc = acc;
-      roc->rocket_vel = new_vel;
-      roc->rocket_pos = new_pos;
+      roc->acc = acc;
+      roc->vel = new_vel;
+      roc->pos = new_pos;
     }
 
     max_acceleration = max(acc.mag(), max_acceleration);

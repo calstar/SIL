@@ -11,8 +11,8 @@
   "timeout": 3,
   "output": [
     {
-      "type": "sensor",
-      "file": "sensor_data.csv",
+      "type": "pos",
+      "file": "pos_data.csv",
       "frequency": 10000
     }
   ]

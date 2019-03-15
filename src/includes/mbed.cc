@@ -5,30 +5,6 @@ int64_t micros() {
   return Environment::global_env->micros();
 }
 
-vec getAcc() {
-  auto r = Environment::global_env->current_rocket;
-  assert(r->acc != nullptr);
-  return r->acc->getData();
-}
-
-float getAccX() {
-  return getAcc().x;
-}
-
-float getAccY() {
-  return getAcc().y;
-}
-
-float getAccZ() {
-  return getAcc().z;
-}
-
-float getAltitude() {
-  auto r = Environment::global_env->current_rocket;
-  assert(r->alt != nullptr);
-  return r->alt->getData();
-}
-
 DigitalOut::DigitalOut(int pin) : pin(pin) { }
 
 void DigitalOut::write(int value) {
@@ -49,3 +25,5 @@ DigitalOut& DigitalOut::operator=(int value) {
 DigitalOut::operator int() {
   return read();
 }
+
+I2C::I2C(int sda, int scl) : sda(sda), scl(scl) {}

@@ -1,7 +1,6 @@
 #pragma once
 #include "common.h" // TODO: Maybe take this out? We don't want code "seeing" anything it won't in the real MCU
 #include "components/environment.h"
-#include "includes/sensors.h"
 #include "includes/flatbuffers.h"
 
 namespace code0 { void start(); }
@@ -47,4 +46,13 @@ public:
   void baud(int rate);
   void set_blocking(bool blocking);
   void printf(char* msg);
+};
+
+class I2C {
+  // Just a skeleton class, sensors should be implemented in their own classes instead of implementing I2C protocols
+  int sda;
+  int scl;
+
+public:
+  I2C(int sda, int scl);
 };

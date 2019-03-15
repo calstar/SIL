@@ -1,8 +1,6 @@
 #pragma once
 #include "common.h"
 #include "components/rocket.h"
-#include "includes/sensors.h"
-
 
 /*
  * Base class for custom output formats

@@ -11,24 +11,24 @@ void Rocket::mapPin(string mapping, shared_ptr<PinComponent> component) {
   ERROR("Mapping unknown pin: " + mapping);
 }
 
-Rocket::Rocket(json rocket_json) {
+Rocket::Rocket(json config) {
   // Get properties of rocket section
-  assert(rocket_json.count("weight") == 1);
-  rocket_weight = rocket_json["weight"].get<double>();
+  assert(config.count("weight") == 1);
+  weight = config["weight"].get<double>();
 
-  assert(rocket_json.count("drag_area") == 1);
-  rocket_drag = rocket_json["drag_area"].get<double>();
+  assert(config.count("drag_area") == 1);
+  drag = config["drag_area"].get<double>();
 
-  assert(rocket_json.count("name") == 1);
-  section_name = rocket_json["name"].get<string>();
+  assert(config.count("name") == 1);
+  section_name = config["name"].get<string>();
 
   // Add microcontrollers
-  for (auto& it : rocket_json["microcontrollers"].items()) {
+  for (auto& it : config["microcontrollers"].items()) {
       microcontrollers.push_back(make_shared<Microcontroller>(it.key(), it.value()["id"].get<int>()));
   }
 
   // Add all motors
-  for (auto& it : rocket_json["motors"].items()) {
+  for (auto& it : config["motors"].items()) {
       motors.emplace_back(make_shared<Motor>(it.value()["file"], it.key()));
       mapPin(it.value()["pin"], motors.back());
   }
@@ -37,7 +37,7 @@ Rocket::Rocket(json rocket_json) {
   }
 
   // Add all chutes
-  for (auto& it : rocket_json["chutes"].items()) {
+  for (auto& it : config["chutes"].items()) {
       chutes.emplace_back(make_shared<Chute>(it.value()["drag_area"], it.key()));
       mapPin(it.value()["pin"], chutes.back());
   }
@@ -46,30 +46,26 @@ Rocket::Rocket(json rocket_json) {
   }
 
   // Add all LEDs
-  for (auto& it : rocket_json["leds"].items()) {
+  for (auto& it : config["leds"].items()) {
       leds.emplace_back(make_shared<LED>(it.key()));
       mapPin(it.value()["pin"], leds.back());
   }
   if (leds.size() == 0) {
     DEBUG_OUT << "WARNING: No LEDs in section: " << section_name << endl;
   }
-
-  // Add sensors
-  acc = new Accelerometer(this); // Allocated once per section so memory leak is negligible
-  alt = new Altimeter(this); // Allocated once per section so memory leak is negligible
 }
 
-vector<set<shared_ptr<Rocket>>> Rocket::parseParts(json rocket_json, vec init_pos, vec init_vel, vec init_accel, vec init_dir) {
+vector<set<shared_ptr<Rocket>>> Rocket::parseParts(json config, vec init_pos, vec init_vel, vec init_accel, vec init_dir) {
   vector<set<shared_ptr<Rocket>>> rocket_sections;
   set<shared_ptr<Rocket>> main_section;
-  for (json rocket_section : rocket_json) {
+  for (json rocket_section : config) {
     auto r = make_shared<Rocket>(rocket_section);
     DEBUG_OUT << "Loaded section \"" << r->section_name << "\"" << endl;
 
-    r->rocket_pos = init_pos;
-    r->rocket_vel = init_vel;
-    r->rocket_acc = init_accel;
-    r->rocket_dir = init_dir;
+    r->pos = init_pos;
+    r->vel = init_vel;
+    r->acc = init_accel;
+    r->dir = init_dir;
 
     main_section.insert(r);
   }
@@ -78,7 +74,7 @@ vector<set<shared_ptr<Rocket>>> Rocket::parseParts(json rocket_json, vec init_po
 }
 
 double Rocket::getDrag() {
-  double ret = rocket_drag;
+  double ret = drag;
 
   for (auto& chute : chutes) {
     ret += chute->getDrag();
