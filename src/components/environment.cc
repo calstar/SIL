@@ -27,30 +27,14 @@ Environment::Environment(string sim_file) {
   }
 
   DEBUG_OUT << "Loading outputs" << endl;
-  for (auto out : sim_json["output"]) {
-    outputs.emplace_back(out);
-  }
+  outputs = OutputParser::parseOutputs(sim_json["output"]);
 
   DEBUG_OUT << "Loading rocket" << endl;
   ifstream rocket_file(sim_json["rocket"].get<string>());
   assert(!rocket_file.fail());
   json rocket_json;
   rocket_file >> rocket_json;
-  set<shared_ptr<Rocket>> main_section;
-
-  for (json rocket_section : rocket_json) {
-    auto r = make_shared<Rocket>(rocket_section);
-    DEBUG_OUT << "Loaded section \"" << r->section_name << "\"" << endl;
-
-    r->rocket_pos = vec(0, 0, groundHeight);
-    r->rocket_vel = vec(0, 0, 0);
-    r->rocket_acc = vec(0, 0, -9.81);
-    r->rocket_dir = vec(0, 0, 1);
-
-    main_section.insert(r);
-  }
-  rocket_sections.push_back(main_section);
-  DEBUG_OUT << "Rocket loaded" << endl;
+  rocket_sections = Rocket::parseParts(rocket_json, vec(0, 0, groundHeight), vec(0, 0, 0), vec(0, 0, -9.81), vec(0, 0, 1));
 
   max_altitude = 0;
   max_speed = 0;
@@ -138,14 +122,14 @@ int64_t Environment::micros() {
 }
 
 void Environment::updateOutputs() {
-  for (Output& out : outputs) {
-    out.update(this->micros(), this->rocket_sections);
+  for (auto out : outputs) {
+    out->update(this->micros(), this->rocket_sections);
   }
 }
 
 void Environment::finishOutputs() {
-  for (Output& out : outputs) {
-    out.finish();
+  for (auto out : outputs) {
+    out->finish();
   }
 }
 

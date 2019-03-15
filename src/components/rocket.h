@@ -31,4 +31,6 @@ public:
   double getDrag();
   double getForce(int64_t time);
   Rocket(json rocket_json);
+
+  static vector<set<shared_ptr<Rocket>>> parseParts(json rocket_json, vec init_pos, vec init_vel, vec init_accel, vec init_dir);
 };

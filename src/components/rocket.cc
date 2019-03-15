@@ -59,6 +59,24 @@ Rocket::Rocket(json rocket_json) {
   alt = new Altimeter(this); // Allocated once per section so memory leak is negligible
 }
 
+vector<set<shared_ptr<Rocket>>> Rocket::parseParts(json rocket_json, vec init_pos, vec init_vel, vec init_accel, vec init_dir) {
+  vector<set<shared_ptr<Rocket>>> rocket_sections;
+  set<shared_ptr<Rocket>> main_section;
+  for (json rocket_section : rocket_json) {
+    auto r = make_shared<Rocket>(rocket_section);
+    DEBUG_OUT << "Loaded section \"" << r->section_name << "\"" << endl;
+
+    r->rocket_pos = init_pos;
+    r->rocket_vel = init_vel;
+    r->rocket_acc = init_accel;
+    r->rocket_dir = init_dir;
+
+    main_section.insert(r);
+  }
+  rocket_sections.push_back(main_section);
+  return rocket_sections;
+}
+
 double Rocket::getDrag() {
   double ret = rocket_drag;
 
@@ -74,4 +92,5 @@ double Rocket::getForce(int64_t time) {
   for (auto& m : motors) {
     ret += m->getForce(time);
   }
+  return ret;
 }

@@ -1,7 +1,7 @@
 #pragma once
-#include "components/rocket.h"
 #include "common.h"
-#include "output.h"
+#include "components/rocket.h"
+#include "outputs/output_parser.h"
 
 class Environment {
   vec wind;       // In meters / sec
@@ -9,7 +9,7 @@ class Environment {
   double groundHeight; // In meters
   bool landed;
 
-  vector<Output> outputs;
+  vector<shared_ptr<Output>> outputs;
 
   double max_altitude;
   double max_acceleration;

@@ -1,7 +1,7 @@
 import sys, os, re
 
 if len(sys.argv) != 4:
-    print("Usage: ./{command} [outdir] [mcu_id] [filepath.cc]".format(command=sys.argv[0]))
+    print(f"Usage: ./{sys.argv[0]} [outdir] [mcu_id] [filepath.cc]")
     exit(1)
 
 

@@ -11,19 +11,9 @@
   "timeout": 3,
   "output": [
     {
-      "type": "acceleration",
-      "file": "acceleration_data.csv",
-      "frequency": 1000
-    },
-    {
-      "type": "accelerometer",
-      "file": "accelerometer_data.csv",
-      "frequency": 1000
-    },
-    {
-      "type": "altitude",
-      "file": "altitude_data.csv",
-      "frequency": 100000
+      "type": "sensor",
+      "file": "sensor_data.csv",
+      "frequency": 10000
     }
   ]
 }
