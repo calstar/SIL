@@ -95,9 +95,7 @@ void Environment::tick() {
 
     double motor_force = 0;
     for (auto roc : section) {
-      for (Motor m : roc->motors) {
-        motor_force += m.getForce(this->micros());
-      }
+      motor_force += roc->getForce(micros());
     }
     force = force + old_dir * motor_force;
 
@@ -137,98 +135,6 @@ void Environment::tick() {
 
 int64_t Environment::micros() {
   return time;
-}
-
-void Environment::setPin(int mcu_id, int pin, bool high) {
-  for (auto section : rocket_sections) {
-    for (auto roc : section) {
-      for (auto mcu : roc->microcontrollers) {
-        if (mcu->id == mcu_id) {
-
-          if (mcu->pin_map.count(pin) == 1) {
-            auto& pmap = mcu->pin_map[pin];
-
-            if (pmap.mode == PIN_UNDEFINED) {
-              DEBUG_OUT << "Warning: Attempting to write to pin " << pin << " before setting pin mode." << endl;
-            } else if (pmap.mode == INPUT || pmap.mode == INPUT_PULLUP) {
-              DEBUG_OUT << "Warning: Attempting to write to input pin " << pin << endl;
-            }
-
-            pmap.high = high;
-            switch (pmap.type) {
-              case CONNECTION_TYPE::MOTOR:
-              if (high == true) {
-                roc->motors.at(pmap.index).activate(this->micros()); // TODO: Maybe set delay on this so super fast writes don't set off the motor
-              }
-              break;
-
-              case CONNECTION_TYPE::CHUTE:
-              if (high == true) {
-                roc->chutes.at(pmap.index).activate(); // TODO: Maybe set delay on this so super fast writes don't set off the black powder
-              }
-              break;
-
-              case CONNECTION_TYPE::LED:
-              roc->leds.at(pmap.index).set(high); // TODO: Maybe set delay on this so super fast writes don't set off the black powder
-              break;
-
-              default:
-              ERROR("Unknown pin type set");
-            }
-          } else {
-            ERROR("setPin() called with when pin not set up");
-          }
-
-          return;
-        }
-      }
-    }
-  }
-
-  ERROR("setPin() called with invalid mcu_id");
-}
-
-int Environment::getPin(int mcu_id, int pin) {
-  for (auto section : rocket_sections) {
-    for (auto roc : section) {
-      for (auto mcu : roc->microcontrollers) {
-        if (mcu->id == mcu_id) {
-          if (mcu->pin_map.count(pin) == 1) {
-            auto& pmap = mcu->pin_map[pin];
-
-            if (pmap.mode == INPUT) {
-              return pmap.high;
-            } else {
-              assert(false && "Invalid pin mode for pin read");
-            }
-          } else {
-            assert(false && "Pin not set up");
-          }
-        }
-      }
-    }
-  }
-  ERROR("getPin() called and pin not found");
-}
-
-void Environment::pinMode(int mcu_id, int pin, uint8_t mode) {
-  assert(mode == INPUT || mode == OUTPUT || mode == INPUT_PULLUP);
-
-  for (auto section : rocket_sections) {
-    for (auto roc : section) {
-      for (auto mcu : roc->microcontrollers) {
-        if (mcu->id == mcu_id) {
-          if (mcu->pin_map.count(pin) == 1) {
-            auto& pmap = mcu->pin_map[pin];
-            if (pmap.mode != mode) DEBUG_OUT << "Setting pin " << pin << " of mcu " << mcu_id << " to mode " << mode << endl;
-            pmap.mode = mode;
-            return;
-          }
-        }
-      }
-    }
-  }
-  ERROR("pinMode called on nonexistent pin " + to_string(pin) + " on mcu " + to_string(mcu_id));
 }
 
 void Environment::updateOutputs() {

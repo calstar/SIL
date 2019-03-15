@@ -37,19 +37,21 @@ int main(int argc, char** argv) {
   while (!env.done()) {
     bool ran_code = false;
     for (const auto sect : env.rocket_sections) {
-      for (auto rp : sect) {
-        for (auto mcu : rp->microcontrollers) {
-          Environment::current_mcu = mcu->id;
-          if (code_time[Environment::current_mcu] / CLOCK_MULTIPLIER < env.micros()) {
-            VERBOSE_OUT << "Running code " << Environment::current_mcu << endl;
+      for (auto& rp : sect) {
+        for (auto& mcu : rp->microcontrollers) {
+          Environment::global_env->current_mcu = mcu;
+          Environment::global_env->current_rocket = rp;
+          int id = mcu->id;
+          if (code_time[id] / CLOCK_MULTIPLIER < env.micros()) {
+            VERBOSE_OUT << "Running code " << id << endl;
             start_timer();
-            if (code_started[Environment::current_mcu]) {
-              loops[Environment::current_mcu]();
+            if (code_started[id]) {
+              loops[id]();
             } else {
-              starts[Environment::current_mcu]();
-              code_started[Environment::current_mcu] = true;
+              starts[id]();
+              code_started[id] = true;
             }
-            code_time[Environment::current_mcu] += elapsed() + CODE_OVERHEAD_PENALTY;
+            code_time[id] += elapsed() + CODE_OVERHEAD_PENALTY;
             ran_code = true;
           }
         }

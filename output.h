@@ -19,6 +19,6 @@ class Output {
 
 public:
   Output(json config);
-  void update(int64_t time, vector<vector<shared_ptr<Rocket>>>& rocket_sections);
+  void update(int64_t time, vector<set<shared_ptr<Rocket>>>& rocket_sections);
   void finish();
 };

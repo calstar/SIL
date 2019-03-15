@@ -9,7 +9,7 @@
 
 class Rocket {
 private:
-  void mapPin(string mapping, PinComponent* component);
+  void mapPin(string mapping, shared_ptr<PinComponent> component);
 
 public:
   string section_name;
@@ -29,5 +29,6 @@ public:
   Altimeter* alt;
 
   double getDrag();
+  double getForce(int64_t time);
   Rocket(json rocket_json);
 };

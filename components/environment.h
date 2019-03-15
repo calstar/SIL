@@ -15,13 +15,14 @@ class Environment {
   double max_acceleration;
   double max_speed;
 
+public:
   // A list of sets of connected rocket components
   vector<set<shared_ptr<Rocket>>> rocket_sections;
+  shared_ptr<Rocket> current_rocket;
+  shared_ptr<Microcontroller> current_mcu;
 
-public:
   static void setGlobalEnv(Environment* env);
   static Environment* global_env;
-  static Rocket* current_rocket;
 
   Environment(string sim_file);
   bool done();

@@ -20,7 +20,7 @@ Output::Output(json config) {
   }
 }
 
-void Output::update(int64_t time, vector<vector<shared_ptr<Rocket>>>& rocket_sections) {
+void Output::update(int64_t time, vector<set<shared_ptr<Rocket>>>& rocket_sections) {
   if (time >= lastPoll + frequency) {
     lastPoll = time;
 

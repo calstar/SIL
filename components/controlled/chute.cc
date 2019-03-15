@@ -7,7 +7,7 @@ void Chute::activate(int64_t time) {
 }
 
 double Chute::getDrag() {
-  if (activated) {
+  if (isActivated) {
     return drag;
   }
   return 0;

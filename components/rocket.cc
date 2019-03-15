@@ -38,7 +38,7 @@ Rocket::Rocket(json rocket_json) {
 
   // Add all chutes
   for (auto& it : rocket_json["chutes"].items()) {
-      chutes.emplace_back(make_shared<Chute>(it.value()["drag_area"], it.key())));
+      chutes.emplace_back(make_shared<Chute>(it.value()["drag_area"], it.key()));
       mapPin(it.value()["pin"], chutes.back());
   }
   if (chutes.size() == 0) {
@@ -62,9 +62,16 @@ Rocket::Rocket(json rocket_json) {
 double Rocket::getDrag() {
   double ret = rocket_drag;
 
-  for (auto chute : chutes) {
-    ret += chute.getDrag();
+  for (auto& chute : chutes) {
+    ret += chute->getDrag();
   }
 
   return ret;
+}
+
+double Rocket::getForce(int64_t time) {
+  double ret = 0;
+  for (auto& m : motors) {
+    ret += m->getForce(time);
+  }
 }

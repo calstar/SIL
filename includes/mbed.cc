@@ -2,17 +2,11 @@
 
 int64_t micros() {
   assert(Environment::global_env != nullptr);
-
   return Environment::global_env->micros();
 }
 
-void pinMode(int pin, uint8_t mode) {
-  assert(Environment::global_env != nullptr);
-  Environment::global_env->pinMode(Environment::current_mcu, pin, mode);
-}
-
 vec getAcc() {
-  auto r = Environment::curr_roc();
+  auto r = Environment::global_env->current_rocket;
   assert(r->acc != nullptr);
   return r->acc->getData();
 }
@@ -30,7 +24,7 @@ float getAccZ() {
 }
 
 float getAltitude() {
-  auto r = Environment::curr_roc();
+  auto r = Environment::global_env->current_rocket;
   assert(r->alt != nullptr);
   return r->alt->getData();
 }
@@ -39,14 +33,12 @@ DigitalOut::DigitalOut(int pin) : pin(pin) { }
 
 void DigitalOut::write(int value) {
   assert(Environment::global_env != nullptr);
-  pinMode(pin, OUTPUT);
-  Environment::global_env->setPin(Environment::current_mcu, pin, value);
+  Environment::global_env->current_mcu->setPin(Environment::global_env->micros(), pin, value);
 }
 
 int DigitalOut::read() {
   assert(Environment::global_env != nullptr);
-  pinMode(pin, OUTPUT);
-  return Environment::global_env->getPin(Environment::current_mcu, pin);
+  ERROR("Read is not implemented");
 }
 
 DigitalOut& DigitalOut::operator=(int value) {

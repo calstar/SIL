@@ -1,5 +1,26 @@
 #include "motor.h"
 
+Motor::Motor(string motor_file, string motor_name) : PinComponent(motor_name) {
+  // open file stream
+  ifstream file(motor_file);
+  assert(!file.fail());
+
+  // read json from filestream
+  json motor_json;
+  file >> motor_json;
+
+  // place values into motor
+  interpolation = motor_json["interpolation"].get<string>();
+
+  // Load thrust curve. NOTE: Assumes thrust curve is provided in time-increasing order
+  for (auto it = motor_json["thrust_curve"].begin(); it != motor_json["thrust_curve"].end(); ++it) {
+    double time = stof(it.key());
+    double force = it.value();
+    thrust_curve.push_back(make_pair(time, force));
+  }
+}
+
+
 double Motor::getForce(int64_t current) {
   // Thrust curve must not be empty
   assert(this->thrust_curve.size() > 0);
@@ -46,28 +67,8 @@ double Motor::getForce(int64_t current) {
   ERROR("Motor has unknown interpolation");
 }
 
-Motor::Motor(string motor_file, string motor_name) : name(motor_name), PinComponent() {
-  // open file stream
-  ifstream file(motor_file);
-  assert(!file.fail());
-
-  // read json from filestream
-  json motor_json;
-  file >> motor_json;
-
-  // place values into motor
-  interpolation = motor_json["interpolation"].get<string>();
-
-  // Load thrust curve. NOTE: Assumes thrust curve is provided in time-increasing order
-  for (auto it = motor_json["thrust_curve"].begin(); it != motor_json["thrust_curve"].end(); ++it) {
-    double time = stof(it.key());
-    double force = it.value();
-    thrust_curve.push_back(make_pair(time, force));
-  }
-}
-
 void Motor::activate(int64_t time) {
-  if (!activated) {
+  if (!isActivated) {
     DEBUG_OUT << "Motor \"" << name << "\" activated" << endl;
     isActivated = true;
     start_time = time;
