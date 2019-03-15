@@ -5,10 +5,13 @@ Software-in-the-loop simulator for rockets
 ```c
   // Includes must be at top of file
   #include "mbed.h"
+  // < Other includes here >
+  
+  // < Defines and global variables should come after the includes and before main >
   
   // Start function, run at the beginning of the program
   void start() {
-    // Code here
+    // < Code here >
   }
   
   // Loop function, run continuously
