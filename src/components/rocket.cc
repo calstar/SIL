@@ -60,17 +60,22 @@ Rocket::Rocket(json config) {
   }
 }
 
+void Rocket::setState(vec pos, vec vel, vec acc, vec dir) {
+  this->pos = pos;
+  this->measured_pos = pos + vec(0, 0, Noise::awgn(ALT_NOISE_MAGNITUDE));
+  this->vel = vel;
+  this->acc = acc;
+  this->measured_acc = acc; // TODO
+  this->dir = dir;
+}
+
 vector<set<shared_ptr<Rocket>>> Rocket::parseParts(json config, vec init_pos, vec init_vel, vec init_accel, vec init_dir) {
   vector<set<shared_ptr<Rocket>>> rocket_sections;
   set<shared_ptr<Rocket>> main_section;
   for (json rocket_section : config) {
     auto r = make_shared<Rocket>(rocket_section);
     DEBUG_OUT << "Loaded section \"" << r->section_name << "\"" << endl;
-
-    r->pos = init_pos;
-    r->vel = init_vel;
-    r->acc = init_accel;
-    r->dir = init_dir;
+    r->setState(init_pos, init_vel, init_accel, init_dir);
 
     main_section.insert(r);
   }

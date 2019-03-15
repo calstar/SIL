@@ -1,5 +1,6 @@
 #pragma once
 #include "components/environment.h"
+#include "components/noise.h"
 #include "includes/mbed.h"
 
 class Altitude {

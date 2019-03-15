@@ -21,7 +21,7 @@ void MPL3115A2::init() {
 }
 
 Altitude* MPL3115A2::readAltitude(Altitude* altitude) {
-    double a = Environment::global_env->current_rocket->pos.z;
+    double a = Environment::global_env->current_rocket->measured_pos.z;
     altitude->setAltitude(a + offsetAlt);
     return altitude;
 }

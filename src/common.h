@@ -12,6 +12,7 @@
 #include <fstream>
 #include <sstream>
 #include <thread>
+#include <random>
 #include <stdint.h>
 
 #include "config.h"

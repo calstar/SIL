@@ -103,9 +103,7 @@ void Environment::tick() {
     }
 
     for (auto roc : section) {
-      roc->acc = acc;
-      roc->vel = new_vel;
-      roc->pos = new_pos;
+      roc->setState(new_pos, new_vel, acc, roc->dir);
     }
 
     max_acceleration = max(acc.mag(), max_acceleration);

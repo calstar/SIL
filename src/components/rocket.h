@@ -1,6 +1,7 @@
 #pragma once
 #include "common.h"
 #include "pin_components/motor.h"
+#include "components/noise.h"
 #include "components/microcontroller.h"
 #include "pin_components/chute.h"
 #include "pin_components/led.h"
@@ -15,8 +16,10 @@ public:
   double weight;
   double drag;
   vec pos;  // In meters
+  vec measured_pos;
   vec vel;  // In meters / sec
   vec acc;  // In meters / sec^2. Recalculated every tick, used mainly for logging
+  vec measured_acc;
   vec dir;  // = rocket_speed / |rocket_speed|?
                    // At the moment yes, but if the simulator gets more advanced then this will not always be the case. -Leo
   vector<shared_ptr<Motor>> motors;
@@ -26,6 +29,7 @@ public:
 
   double getDrag();
   double getForce(int64_t time);
+  void setState(vec pos, vec vel, vec acc, vec dir);
   Rocket(json config);
 
   static vector<set<shared_ptr<Rocket>>> parseParts(json config, vec init_pos, vec init_vel, vec init_accel, vec init_dir);
