@@ -137,11 +137,6 @@ Don't actually use // comments, they're not allowed in json 😊
   }
 }
 ```
-```json
-{
-  "todo": true
-}
-```
 
 ## Adding output formats
 * Create a .cc and .h file for the intended output (subclass of Output)
