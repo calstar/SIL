@@ -48,8 +48,9 @@ int main() {
 ```
 
 ### Simulation file formats
+Don't actually use // comments, they're not allowed in json 😊 
 #### Motor file format
-```json
+```javascript
 {
   "interpolation": "linear", // Type of interpolation between thrust curve points
   "thrust_curve": {          // Time from activation and thrust (N), must start and end with 0, must be in chronological order
