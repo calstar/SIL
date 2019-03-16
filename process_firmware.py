@@ -1,25 +1,25 @@
 import sys, os, re
 
 if len(sys.argv) != 4:
-    print(f"Usage: ./{sys.argv[0]} [outdir] [mcu_id] [filepath.cc]")
+    print("Usage: ./%s [outdir] [mcu_id] [filepath.cc]" % sys.argv[0])
     exit(1)
 
 
 outdir = sys.argv[1]
 namespace = sys.argv[2]
 filepath = sys.argv[3]
-outpath = f"{outdir}/{namespace}.cc"
+outpath = "%s/%s.cc" % (outdir, namespace)
 
 if not re.match(r"^code\d+$", namespace):
-    print(f"Invalid namespace name. Format must be code{{n}}: {namespace}")
+    print("Invalid namespace name. Format must be code{{n}}: %s" % namespace)
     exit(1)
 
 if not os.path.isdir(outdir):
-    print(f"Outdir doesn't exist: {outdir}")
+    print("Outdir doesn't exist: %s" % outdir)
     exit(1)
 
 if not os.path.exists(filepath):
-    print(f"Filepath doesn't exist: {filepath}")
+    print("Filepath doesn't exist: %s" % filepath)
     exit(1)
 
 with open(filepath) as f:
@@ -32,7 +32,7 @@ for i, line in enumerate(list(lines)):
         lines[i] = re.sub(r'^\s*#include\s+"', '#include "includes/', line)
         index = i + 1
 
-lines.insert(index, f"\nnamespace {namespace} {{\n\n")
+lines.insert(index, "\nnamespace %s {\n\n" % namespace)
 
 # Remove main function
 for i, line in enumerate(lines):

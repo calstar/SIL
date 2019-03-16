@@ -31,8 +31,8 @@ $(OBJDIR)/%.o: %.cc
 # After the objdir so that those files won't be caught
 code%: # Rebuilds every time because the codeN could change values
 	$(if $($@), \
-		@echo "================Processing $@ ($($@))=================" && python3 ./process_firmware.py $(FIRMWAREDIR) $@ $($@), \
-		@echo "================Using default file ($(EMPTY_FW_FILE)) for unset $@=================" && python3 ./process_firmware.py $(FIRMWAREDIR) $@ $(EMPTY_FW_FILE))
+		@echo "================Processing $@ ($($@))=================" && python ./process_firmware.py $(FIRMWAREDIR) $@ $($@), \
+		@echo "================Using default file ($(EMPTY_FW_FILE)) for unset $@=================" && python ./process_firmware.py $(FIRMWAREDIR) $@ $(EMPTY_FW_FILE))
 
 
 builddir:
