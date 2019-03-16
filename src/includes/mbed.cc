@@ -82,7 +82,7 @@ void Serial::printf(const char* format, ...) {
   va_list arg;
   char msg[1024];
   va_start (arg, format);
-  vsprintf_s (msg, format, arg);
+  vsprintf (msg, format, arg);
   va_end (arg);
 
   getSerial(txpin)->add(msg, strlen(msg));
