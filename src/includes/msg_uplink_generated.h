@@ -48,9 +48,13 @@ inline const char *EnumNameUplinkType(UplinkType e) {
 
 struct UplinkMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_TYPE = 4,
-    VT_BP = 6
+    VT_BYTES = 4,
+    VT_TYPE = 6,
+    VT_BP = 8
   };
+  uint8_t Bytes() const {
+    return GetField<uint8_t>(VT_BYTES, 0);
+  }
   UplinkType Type() const {
     return static_cast<UplinkType>(GetField<int8_t>(VT_TYPE, 0));
   }
@@ -59,6 +63,7 @@ struct UplinkMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
+           VerifyField<uint8_t>(verifier, VT_BYTES) &&
            VerifyField<int8_t>(verifier, VT_TYPE) &&
            VerifyOffset(verifier, VT_BP) &&
            verifier.VerifyVector(BP()) &&
@@ -69,6 +74,9 @@ struct UplinkMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 struct UplinkMsgBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
+  void add_Bytes(uint8_t Bytes) {
+    fbb_.AddElement<uint8_t>(UplinkMsg::VT_BYTES, Bytes, 0);
+  }
   void add_Type(UplinkType Type) {
     fbb_.AddElement<int8_t>(UplinkMsg::VT_TYPE, static_cast<int8_t>(Type), 0);
   }
@@ -89,21 +97,25 @@ struct UplinkMsgBuilder {
 
 inline flatbuffers::Offset<UplinkMsg> CreateUplinkMsg(
     flatbuffers::FlatBufferBuilder &_fbb,
+    uint8_t Bytes = 0,
     UplinkType Type = UplinkType_FCOn,
     flatbuffers::Offset<flatbuffers::Vector<uint8_t>> BP = 0) {
   UplinkMsgBuilder builder_(_fbb);
   builder_.add_BP(BP);
   builder_.add_Type(Type);
+  builder_.add_Bytes(Bytes);
   return builder_.Finish();
 }
 
 inline flatbuffers::Offset<UplinkMsg> CreateUplinkMsgDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
+    uint8_t Bytes = 0,
     UplinkType Type = UplinkType_FCOn,
     const std::vector<uint8_t> *BP = nullptr) {
   auto BP__ = BP ? _fbb.CreateVector<uint8_t>(*BP) : 0;
   return Calstar::CreateUplinkMsg(
       _fbb,
+      Bytes,
       Type,
       BP__);
 }

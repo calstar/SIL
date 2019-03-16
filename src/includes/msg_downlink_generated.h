@@ -44,12 +44,16 @@ inline const char *EnumNameTPCState(TPCState e) {
 
 struct DownlinkMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_STATE = 4,
-    VT_FCPOWERED = 6,
-    VT_FCMSG = 8,
-    VT_GPSSTRING = 10,
-    VT_BATTVOLTAGE = 12
+    VT_BYTES = 4,
+    VT_STATE = 6,
+    VT_FCPOWERED = 8,
+    VT_FCMSG = 10,
+    VT_GPSSTRING = 12,
+    VT_BATTVOLTAGE = 14
   };
+  uint8_t Bytes() const {
+    return GetField<uint8_t>(VT_BYTES, 0);
+  }
   TPCState State() const {
     return static_cast<TPCState>(GetField<int8_t>(VT_STATE, 0));
   }
@@ -67,6 +71,7 @@ struct DownlinkMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
+           VerifyField<uint8_t>(verifier, VT_BYTES) &&
            VerifyField<int8_t>(verifier, VT_STATE) &&
            VerifyField<uint8_t>(verifier, VT_FCPOWERED) &&
            VerifyOffset(verifier, VT_FCMSG) &&
@@ -81,6 +86,9 @@ struct DownlinkMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 struct DownlinkMsgBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
+  void add_Bytes(uint8_t Bytes) {
+    fbb_.AddElement<uint8_t>(DownlinkMsg::VT_BYTES, Bytes, 0);
+  }
   void add_State(TPCState State) {
     fbb_.AddElement<int8_t>(DownlinkMsg::VT_STATE, static_cast<int8_t>(State), 0);
   }
@@ -110,6 +118,7 @@ struct DownlinkMsgBuilder {
 
 inline flatbuffers::Offset<DownlinkMsg> CreateDownlinkMsg(
     flatbuffers::FlatBufferBuilder &_fbb,
+    uint8_t Bytes = 0,
     TPCState State = TPCState_Pad,
     bool FCPowered = false,
     flatbuffers::Offset<FCUpdateMsg> FCMsg = 0,
@@ -121,11 +130,13 @@ inline flatbuffers::Offset<DownlinkMsg> CreateDownlinkMsg(
   builder_.add_BattVoltage(BattVoltage);
   builder_.add_FCPowered(FCPowered);
   builder_.add_State(State);
+  builder_.add_Bytes(Bytes);
   return builder_.Finish();
 }
 
 inline flatbuffers::Offset<DownlinkMsg> CreateDownlinkMsgDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
+    uint8_t Bytes = 0,
     TPCState State = TPCState_Pad,
     bool FCPowered = false,
     flatbuffers::Offset<FCUpdateMsg> FCMsg = 0,
@@ -134,6 +145,7 @@ inline flatbuffers::Offset<DownlinkMsg> CreateDownlinkMsgDirect(
   auto GPSString__ = GPSString ? _fbb.CreateString(GPSString) : 0;
   return Calstar::CreateDownlinkMsg(
       _fbb,
+      Bytes,
       State,
       FCPowered,
       FCMsg,

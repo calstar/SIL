@@ -42,33 +42,37 @@ inline const char *EnumNameFCState(FCState e) {
 
 struct FCUpdateMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_STATE = 4,
-    VT_ACCELX = 6,
-    VT_ACCELY = 8,
-    VT_ACCELZ = 10,
-    VT_MAGX = 12,
-    VT_MAGY = 14,
-    VT_MAGZ = 16,
-    VT_GYROX = 18,
-    VT_GYROY = 20,
-    VT_GYROZ = 22,
-    VT_ALTITUDE = 24,
-    VT_PRESSURE = 26,
-    VT_BP1CONTINUITY = 28,
-    VT_BP1IGNITED = 30,
-    VT_BP2CONTINUITY = 32,
-    VT_BP2IGNITED = 34,
-    VT_BP3CONTINUITY = 36,
-    VT_BP3IGNITED = 38,
-    VT_BP4CONTINUITY = 40,
-    VT_BP4IGNITED = 42,
-    VT_BP5CONTINUITY = 44,
-    VT_BP5IGNITED = 46,
-    VT_BP6CONTINUITY = 48,
-    VT_BP6IGNITED = 50,
-    VT_BP7CONTINUITY = 52,
-    VT_BP7IGNITED = 54
+    VT_BYTES = 4,
+    VT_STATE = 6,
+    VT_ACCELX = 8,
+    VT_ACCELY = 10,
+    VT_ACCELZ = 12,
+    VT_MAGX = 14,
+    VT_MAGY = 16,
+    VT_MAGZ = 18,
+    VT_GYROX = 20,
+    VT_GYROY = 22,
+    VT_GYROZ = 24,
+    VT_ALTITUDE = 26,
+    VT_PRESSURE = 28,
+    VT_BP1CONTINUITY = 30,
+    VT_BP1IGNITED = 32,
+    VT_BP2CONTINUITY = 34,
+    VT_BP2IGNITED = 36,
+    VT_BP3CONTINUITY = 38,
+    VT_BP3IGNITED = 40,
+    VT_BP4CONTINUITY = 42,
+    VT_BP4IGNITED = 44,
+    VT_BP5CONTINUITY = 46,
+    VT_BP5IGNITED = 48,
+    VT_BP6CONTINUITY = 50,
+    VT_BP6IGNITED = 52,
+    VT_BP7CONTINUITY = 54,
+    VT_BP7IGNITED = 56
   };
+  uint8_t Bytes() const {
+    return GetField<uint8_t>(VT_BYTES, 0);
+  }
   FCState State() const {
     return static_cast<FCState>(GetField<int8_t>(VT_STATE, 0));
   }
@@ -149,6 +153,7 @@ struct FCUpdateMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
+           VerifyField<uint8_t>(verifier, VT_BYTES) &&
            VerifyField<int8_t>(verifier, VT_STATE) &&
            VerifyField<float>(verifier, VT_ACCELX) &&
            VerifyField<float>(verifier, VT_ACCELY) &&
@@ -182,6 +187,9 @@ struct FCUpdateMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 struct FCUpdateMsgBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
+  void add_Bytes(uint8_t Bytes) {
+    fbb_.AddElement<uint8_t>(FCUpdateMsg::VT_BYTES, Bytes, 0);
+  }
   void add_State(FCState State) {
     fbb_.AddElement<int8_t>(FCUpdateMsg::VT_STATE, static_cast<int8_t>(State), 0);
   }
@@ -274,6 +282,7 @@ struct FCUpdateMsgBuilder {
 
 inline flatbuffers::Offset<FCUpdateMsg> CreateFCUpdateMsg(
     flatbuffers::FlatBufferBuilder &_fbb,
+    uint8_t Bytes = 0,
     FCState State = FCState_Pad,
     float AccelX = 0.0f,
     float AccelY = 0.0f,
@@ -327,6 +336,7 @@ inline flatbuffers::Offset<FCUpdateMsg> CreateFCUpdateMsg(
   builder_.add_BP1Ignited(BP1Ignited);
   builder_.add_BP1Continuity(BP1Continuity);
   builder_.add_State(State);
+  builder_.add_Bytes(Bytes);
   return builder_.Finish();
 }
 
