@@ -2,7 +2,7 @@
 
 Environment* Environment::global_env = nullptr;
 
-Environment::Environment(json sim_json) {
+Environment::Environment(json sim_json, string test_name) : test_name(test_name) {
   time = 0;
   groundHeight = sim_json["ground_height"]; // TODO: Make a customizable randomized input
   landed = false;
@@ -17,7 +17,7 @@ Environment::Environment(json sim_json) {
   }
 
   DEBUG_OUT << "Loading outputs" << endl;
-  outputs = OutputParser::parseOutputs(sim_json["output"]);
+  outputs = OutputParser::parseOutputs(sim_json["output"], test_name);
 
   DEBUG_OUT << "Loading rocket" << endl;
   ifstream rocket_file(sim_json["rocket"].get<string>());
@@ -85,7 +85,7 @@ void Environment::tick() {
       if (new_vel.z < -0.1) {
         landing_speed = new_vel.mag();
         landing_time = time;
-        DEBUG_OUT << "Rocket landed at height " << new_pos.z << " m/s" << endl;
+        landing_pos = new_pos;
         landed = true;
       }
 
@@ -128,4 +128,5 @@ void Environment::summary() {
   DEBUG_OUT << "Max Speed: " << max_speed << " meters/s" << endl;
   DEBUG_OUT << "Max Acceleration: " << max_acceleration << " meters/s^2" << endl;
   DEBUG_OUT << "Landing Speed: " << landing_speed << " meters/s" << endl;
+  DEBUG_OUT << "Landing Pos: " << landing_pos << " m" << endl;
 }

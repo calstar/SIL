@@ -79,14 +79,15 @@ int main(int argc, char** argv) {
   file.close();
 
   for (auto& test_config : config["tests"]) {
+    string test_name = test_config["name"].get<string>();
     DEBUG_OUT << endl << "================================================================" << endl;
+    DEBUG_OUT << "Running with test: " << test_name << endl << endl;
     DEBUG_OUT << "Loading environment..." << endl;
-    Environment env(config);
+    Environment env(config, test_name);
     Environment::setGlobalEnv(&env);
     DEBUG_OUT << "Environment loaded" << endl;
 
     Test test(test_config); // Has to be after environment setup because pointers
-    DEBUG_OUT << "Running with test: " << test.name << endl << endl;
 
     vector<bool> code_started(MCU_LIMIT, false);
     vector<int64_t> code_time(MCU_LIMIT, 0); // Time spent in rocket code in microseconds

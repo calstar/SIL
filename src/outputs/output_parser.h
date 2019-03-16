@@ -3,5 +3,5 @@
 
 class OutputParser {
 public:
-    static vector<shared_ptr<Output>> parseOutputs(json config);
+    static vector<shared_ptr<Output>> parseOutputs(json config, string test_name);
 };
