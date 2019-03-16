@@ -1,4 +1,4 @@
-#include "pinComponent.h"
+#include "pincomponent.h"
 
 PinComponent::PinComponent(string name) : name(name), isActivated(false) {}
 

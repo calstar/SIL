@@ -1,6 +1,7 @@
 #include "common.h"
 #include "components/environment.h"
 #include "components/rocket.h"
+#include "tests/test.h"
 #include "includes/mbed.h"
 #include <fcntl.h>
 #include <sys/types.h>
@@ -45,18 +46,6 @@ int main(int argc, char** argv) {
     }
   }
 
-  DEBUG_OUT << "Loading environment..." << endl;
-  Environment env{string(argv[1])};
-  Environment::setGlobalEnv(&env);
-  DEBUG_OUT << "Environment loaded" << endl;
-
-  vector<bool> code_started(MCU_LIMIT, false);
-  vector<int64_t> code_time(MCU_LIMIT, 0); // Time spent in rocket code in microseconds
-
-  // start_timer();
-  // code_init();
-  // code_time += elapsed();
-
   for (int i = 0; i < MCU_LIMIT; i++) {
     if (ENABLE_TERMINAL[i]) {
       DEBUG_OUT << "Enabling terminal " << i << "... (open ./build/terminal " << i << ")" << endl;
@@ -79,54 +68,79 @@ int main(int argc, char** argv) {
     }
   }
 
-  DEBUG_OUT << "Starting Simulation" << endl;
-  while (!env.done()) {
-    bool ran_code = false;
-    for (const auto sect : env.rocket_sections) {
-      for (auto& rp : sect) {
-        for (auto& mcu : rp->microcontrollers) {
-          Environment::global_env->current_mcu = mcu;
-          Environment::global_env->current_rocket = rp;
-          int id = mcu->id;
-          if (mcu->powered && code_time[id] / CLOCK_MULTIPLIER < env.micros()) {
-            VERBOSE_OUT << "Running code " << id << endl;
-            start_timer();
-            if (code_started[id]) {
-              loops[id]();
-            } else {
-              starts[id]();
-              code_started[id] = true;
+  ifstream file(argv[1]);
+  if (!file.good()) {
+    cerr << "File does not exist: " << argv[1] << endl;
+    assert(false);
+  }
+
+  json config;
+  file >> config;
+  file.close();
+
+  for (auto& test_config : config["tests"]) {
+    DEBUG_OUT << endl << "================================================================" << endl;
+    DEBUG_OUT << "Loading environment..." << endl;
+    Environment env(config);
+    Environment::setGlobalEnv(&env);
+    DEBUG_OUT << "Environment loaded" << endl;
+
+    Test test(test_config); // Has to be after environment setup because pointers
+    DEBUG_OUT << "Running with test: " << test.name << endl << endl;
+
+    vector<bool> code_started(MCU_LIMIT, false);
+    vector<int64_t> code_time(MCU_LIMIT, 0); // Time spent in rocket code in microseconds
+
+
+    DEBUG_OUT << "Starting Simulation" << endl;
+    while (!env.done()) {
+      bool ran_code = false;
+      for (const auto sect : env.rocket_sections) {
+        for (auto& rp : sect) {
+          for (auto& mcu : rp->microcontrollers) {
+            Environment::global_env->current_mcu = mcu;
+            Environment::global_env->current_rocket = rp;
+            int id = mcu->id;
+            if (mcu->powered && code_time[id] / CLOCK_MULTIPLIER < env.micros()) {
+              VERBOSE_OUT << "Running code " << id << endl;
+              start_timer();
+              if (code_started[id]) {
+                loops[id]();
+              } else {
+                starts[id]();
+                code_started[id] = true;
+              }
+              code_time[id] += elapsed() + CODE_OVERHEAD_PENALTY;
+              ran_code = true;
             }
-            code_time[id] += elapsed() + CODE_OVERHEAD_PENALTY;
-            ran_code = true;
           }
         }
       }
-    }
-    // if (!ran_code) {
-      env.tick();
-    // } else {
-    //   // TODO: Maybe put a warning here for loops that run twice without environment ticking
-    // }
-    VERBOSE_OUT << env.micros() << endl;
-    env.updateOutputs();
+      // if (!ran_code) {
+        env.tick();
+      // } else {
+      //   // TODO: Maybe put a warning here for loops that run twice without environment ticking
+      // }
+      VERBOSE_OUT << env.micros() << endl;
+      env.updateOutputs();
 
-    for (int i = 0; i < MCU_LIMIT; i++) {
-      if (ENABLE_TERMINAL[i]) {
-        char buf[MAX_BUF];
-        struct pollfd fds;
-        fds.events = POLLIN;
-        fds.fd = SERIAL_IN_FDS[i]; /* this is STDIN */
-        if (poll(&fds, 1, 0) == 1) {
-          int len = read(SERIAL_IN_FDS[i], buf, MAX_BUF);
-          if (len > 0) {
-            printf("Received: %s\n", buf);
-            for (const auto sect : env.rocket_sections) {
-              for (auto rp : sect) {
-                for (auto mcu : rp->microcontrollers) {
-                  if (mcu->id == i) {
-                    if (mcu->serial_in == NULL) ERROR("MCU has no serial in but is receiving serial commands");
-                    mcu->serial_in->add(buf, len);
+      for (int i = 0; i < MCU_LIMIT; i++) {
+        if (ENABLE_TERMINAL[i]) {
+          char buf[MAX_BUF];
+          struct pollfd fds;
+          fds.events = POLLIN;
+          fds.fd = SERIAL_IN_FDS[i]; /* this is STDIN */
+          if (poll(&fds, 1, 0) == 1) {
+            int len = read(SERIAL_IN_FDS[i], buf, MAX_BUF);
+            if (len > 0) {
+              printf("Received: %s\n", buf);
+              for (const auto sect : env.rocket_sections) {
+                for (auto rp : sect) {
+                  for (auto mcu : rp->microcontrollers) {
+                    if (mcu->id == i) {
+                      if (mcu->serial_in == NULL) ERROR("MCU has no serial in but is receiving serial commands");
+                      mcu->serial_in->add(buf, len);
+                    }
                   }
                 }
               }
@@ -135,9 +149,16 @@ int main(int argc, char** argv) {
         }
       }
     }
+    env.finishOutputs();
+    DEBUG_OUT << "Finished Simulation" << endl << endl;;
+    env.summary();
+    DEBUG_OUT << endl;
+    if (test.checkAssertions()) {
+      DEBUG_OUT << "Test " << test.name << " PASSED ALL ASSERTIONS!" << endl;
+    } else {
+      DEBUG_OUT << "Test " << test.name << " FAILED ASSERTION!" << endl;
+    }
+    DEBUG_OUT << "================================================================" << endl << endl;
+    Environment::setGlobalEnv(nullptr);
   }
-  env.finishOutputs();
-  DEBUG_OUT << "Finished Simulation" << endl;
-  env.summary();
-  Environment::setGlobalEnv(nullptr);
 }

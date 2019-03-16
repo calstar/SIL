@@ -1,7 +1,7 @@
 #pragma once
 #include "common.h"
-#include "pin_components/pinComponent.h"
-#include "pin_components/silserial.h"
+#include "components/pins//pincomponent.h"
+#include "components/pins//silserial.h"
 
 struct PinMapping {
   shared_ptr<PinComponent> component;

@@ -2,17 +2,7 @@
 
 Environment* Environment::global_env = nullptr;
 
-Environment::Environment(string sim_file) {
-  ifstream file(sim_file);
-  if (!file.good()) {
-    cerr << "File does not exist: " << sim_file << endl;
-    assert(false);
-  }
-
-  json sim_json;
-  file >> sim_json;
-  file.close();
-
+Environment::Environment(json sim_json) {
   time = 0;
   groundHeight = sim_json["ground_height"]; // TODO: Make a customizable randomized input
   landed = false;
@@ -93,8 +83,9 @@ void Environment::tick() {
       new_pos.z = groundHeight;
 
       if (new_vel.z < -0.1) {
-        double speed = new_vel.mag();
-        DEBUG_OUT << "Rocket landed at height " << new_pos.z << " at " << speed << " m/s" << endl;
+        landing_speed = new_vel.mag();
+        landing_time = time;
+        DEBUG_OUT << "Rocket landed at height " << new_pos.z << " m/s" << endl;
         landed = true;
       }
 
@@ -136,4 +127,5 @@ void Environment::summary() {
   DEBUG_OUT << "Max Altitude: " << max_altitude << " meters" << endl;
   DEBUG_OUT << "Max Speed: " << max_speed << " meters/s" << endl;
   DEBUG_OUT << "Max Acceleration: " << max_acceleration << " meters/s^2" << endl;
+  DEBUG_OUT << "Landing Speed: " << landing_speed << " meters/s" << endl;
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "common.h"
-#include "pinComponent.h"
+#include "pincomponent.h"
 #include <string>
 #include <vector>
 
