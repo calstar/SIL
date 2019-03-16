@@ -41,6 +41,7 @@ Environment::Environment(string sim_file) {
   max_acceleration = 0;
 }
 
+
 void Environment::setGlobalEnv(Environment* env) {
   Environment::global_env = env;
 }

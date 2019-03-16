@@ -23,13 +23,23 @@ Rocket::Rocket(json config) {
   section_name = config["name"].get<string>();
 
   // Add microcontrollers
+  vector<pair<string, shared_ptr<PinComponent>>> to_map; // Wait until everything is added to map these
   for (auto& it : config["microcontrollers"].items()) {
-      microcontrollers.push_back(make_shared<Microcontroller>(it.key(), it.value()["id"].get<int>()));
+      shared_ptr<Microcontroller> mcu = make_shared<Microcontroller>(it.key(), it.value()["id"].get<int>());
+      microcontrollers.push_back(mcu);
+      if (it.value().count("pin") != 0) {
+        string powerpin = it.value()["pin"].get<string>();
+        microcontrollers.back()->powered = false;
+        to_map.push_back(make_pair(powerpin, microcontrollers.back()));
+      }
+  }
+  for (auto m : to_map) {
+    mapPin(m.first, m.second);
   }
 
   // Add all motors
   for (auto& it : config["motors"].items()) {
-      motors.emplace_back(make_shared<Motor>(it.value()["file"], it.key()));
+      motors.push_back(make_shared<Motor>(it.value()["file"], it.key()));
       if (it.value().find("pin") != it.value().end()) {
           mapPin(it.value()["pin"], motors.back());
       } else {
@@ -43,7 +53,7 @@ Rocket::Rocket(json config) {
 
   // Add all chutes
   for (auto& it : config["chutes"].items()) {
-      chutes.emplace_back(make_shared<Chute>(it.value()["drag_area"], it.key()));
+      chutes.push_back(make_shared<Chute>(it.value()["drag_area"], it.key()));
       mapPin(it.value()["pin"], chutes.back());
   }
   if (chutes.size() == 0) {
@@ -52,11 +62,37 @@ Rocket::Rocket(json config) {
 
   // Add all LEDs
   for (auto& it : config["leds"].items()) {
-      leds.emplace_back(make_shared<LED>(it.key()));
+      leds.push_back(make_shared<LED>(it.key()));
       mapPin(it.value()["pin"], leds.back());
   }
   if (leds.size() == 0) {
     DEBUG_OUT << "WARNING: No LEDs in section: " << section_name << endl;
+  }
+
+  // Connect serial ports
+  if (config.count("communications") != 0) {
+    for (auto p : config["communications"]) {
+      serials.emplace_back(make_shared<SILSerial>());
+      if (p[0] == "SIL_INPUT") {
+        serials.back()->sil_input = true;
+        string mapping = p[1];
+        bool found = false;
+        for (auto mcu : microcontrollers) {
+          if (mapping.substr(0, mapping.find_first_of(":")) == mcu->name) {
+            mcu->serial_in = serials[serials.size() - 1];
+            found = true;
+          }
+        }
+        if (!found) ERROR("MCU not found");
+      } else {
+        mapPin(p[0], serials.back());
+      }
+      if (p[1] == "SIL_OUTPUT") {
+        serials.back()->sil_output = true;
+      } else {
+        mapPin(p[1], serials.back());
+      }
+    }
   }
 }
 

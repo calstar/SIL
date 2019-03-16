@@ -2,7 +2,7 @@ CC=cc
 CXX=clang++
 RM=rm -f
 
-CPPFLAGS= -g -std=c++14 -DSIL -c -I src
+CPPFLAGS= -g -std=c++14 -DSIL -c -I src -I src/lib
 LDFLAGS= -g
 LDLIBS=
 
@@ -16,10 +16,14 @@ CODEFILES = code0 code1 code2 code3 code4
 SRCS= $(shell find src -type f -name '*.cc') $(addprefix $(FIRMWAREDIR)/,$(addsuffix .cc,$(CODEFILES)))
 OBJS= $(addprefix $(OBJDIR)/, $(subst .cc,.o,$(SRCS)))
 
-all: builddir $(CODEFILES) $(BUILDDIR)/sil
+all: builddir $(CODEFILES) $(BUILDDIR)/sil $(BUILDDIR)/terminal
 
 $(BUILDDIR)/sil: $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BUILDDIR)/sil $(OBJS) $(LDLIBS)
+
+$(BUILDDIR)/terminal: tools/terminal.cc
+	$(CXX) -o $@ $<
+
 
 $(OBJDIR)/%.o: %.cc
 	$(CXX) $(CPPFLAGS) -o $@ $<

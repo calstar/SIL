@@ -14,11 +14,11 @@ DigitalOut::DigitalOut(int pin) : pin(pin) { }
 void DigitalOut::write(int value) {
   assert(Environment::global_env != nullptr);
   Environment::global_env->current_mcu->setPin(Environment::global_env->micros(), pin, value);
+  current_value = value;
 }
 
 int DigitalOut::read() {
-  assert(Environment::global_env != nullptr);
-  ERROR("Read is not implemented");
+  return current_value;
 }
 
 DigitalOut& DigitalOut::operator=(int value) {
@@ -56,6 +56,47 @@ us_timestamp_t Timer::read_high_resolution_us() {
   }
 }
 
-Serial::Serial(int rx, int tx) {}
+Serial::Serial(int tx, int rx) {
+  rxpin = rx;
+  txpin = tx;
+}
+
+shared_ptr<SILSerial> getSerial(int pin) {
+  auto mcu = Environment::global_env->current_mcu;
+  auto roc = Environment::global_env->current_rocket;
+
+
+  return dynamic_pointer_cast<SILSerial>(mcu->getComponent(pin));
+}
+
+void Serial::baud(int rate) {
+
+}
+
+void Serial::set_blocking(bool blocking) {
+
+}
+
+void Serial::printf(const char* format, ...) {
+  va_list arg;
+  char msg[1024];
+  va_start (arg, format);
+  vsprintf (msg, format, arg);
+  va_end (arg);
+
+  getSerial(txpin)->add(msg, strlen(msg));
+}
+
+void Serial::write(uint8_t* buf, int len, void* callback) {
+  getSerial(txpin)->add((char*)buf, len);
+}
+
+bool Serial::readable() {
+  return !getSerial(rxpin)->empty();
+}
+
+char Serial::getc() {
+  return getSerial(rxpin)->getc();
+}
 
 I2C::I2C(int sda, int scl) : sda(sda), scl(scl) {}

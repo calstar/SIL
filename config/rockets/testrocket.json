@@ -5,42 +5,54 @@
     "drag_area": 0.02,
     "leds": {
       "led1": {
-        "pin": "flight_computer:10"
+        "pin": "flight_computer:7"
       },
       "led2": {
-        "pin": "flight_computer:11"
+        "pin": "flight_computer:8"
+      },
+      "led3": {
+        "pin": "flight_computer:9"
       }
     },
     "motors": {
       "booster": {
-        "file": "config/motors/aerotech_j800t.json"
+        "file": "config/motors/aerotech_j800t.json",
+        "pin": "flight_computer:16"
       }
     },
     "separators": {
       "stage1": {
         "separate": "sustainer",
-        "pin": "flight_computer:5"
+        "pin": "flight_computer:10"
       }
     },
     "chutes": {
       "drogue": {
         "drag_area": 5,
-        "pin": "flight_computer:6"
+        "pin": "flight_computer:12"
       },
       "main": {
         "drag_area": 30,
-        "pin": "flight_computer:7"
+        "pin": "flight_computer:14"
       }
     },
     "microcontrollers": {
       "flight_computer": {
         "id": 0,
-        "pin": "telemetry_power_control:9"
+        "pin": "telemetry_power_control:24"
       },
       "telemetry_power_control": {
         "id": 1
       }
-    }
+    },
+    "communications": [
+      ["flight_computer:4", "telemetry_power_control:3"],
+      ["telemetry_power_control:4", "flight_computer:3"],
+      ["SIL_INPUT", "flight_computer:5"],
+      ["flight_computer:6", "SIL_OUTPUT"],
+      ["SIL_INPUT", "telemetry_power_control:5"],
+      ["telemetry_power_control:6", "SIL_OUTPUT"]
+    ]
   },
   {
     "name": "sustainer",
@@ -48,16 +60,16 @@
     "drag_area": 0.02,
     "leds": {
       "led1": {
-        "pin": "flight_computer:10"
+        "pin": "flight_computer:110"
       },
       "led2": {
-        "pin": "flight_computer:11"
+        "pin": "flight_computer:111"
       }
     },
     "motors": {
       "sustainer": {
         "file": "config/motors/testdudmotor.json",
-        "pin": "flight_computer:3"
+        "pin": "flight_computer:103"
       }
     },
     "separators": {
@@ -65,20 +77,16 @@
     "chutes": {
       "drogue": {
         "drag_area": 10,
-        "pin": "flight_computer:6"
+        "pin": "flight_computer:106"
       },
       "main": {
         "drag_area": 30,
-        "pin": "flight_computer:7"
+        "pin": "flight_computer:107"
       }
     },
     "microcontrollers": {
       "flight_computer": {
-        "id": 2,
-        "pin": "telemetry_power_control:9"
-      },
-      "telemetry_power_control": {
-        "id": 3
+        "id": 2
       }
     }
   }

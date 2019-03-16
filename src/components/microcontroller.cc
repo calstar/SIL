@@ -1,6 +1,9 @@
 #include "microcontroller.h"
 
-Microcontroller::Microcontroller(string name, int id) : name(name), id(id) { }
+Microcontroller::Microcontroller(string name, int id) : PinComponent(name), name(name), id(id) {
+  powered = true;
+  serial_in = NULL;
+}
 
 void Microcontroller::mapPin(int index, PinMapping mapping) {
     assert(pinMap.count(index) == 0);
@@ -16,4 +19,17 @@ void Microcontroller::setPin(int64_t time, int index, bool value) {
             pinMap[index].component->deactivate(time);
         }
     }
+}
+
+shared_ptr<PinComponent> Microcontroller::getComponent(int index) {
+  if (pinMap.count(index) == 0) ERROR("getComponent() called with nonexistent pin");
+  return pinMap[index].component;
+}
+
+void Microcontroller::activate(int64_t time) {
+  powered = true;
+}
+
+void Microcontroller::deactivate(int64_t time) {
+  powered = false;
 }

@@ -3,6 +3,7 @@
 #include "pin_components/motor.h"
 #include "components/noise.h"
 #include "components/microcontroller.h"
+#include "pin_components/silserial.h"
 #include "pin_components/chute.h"
 #include "pin_components/led.h"
 #include "pin_components/pinComponent.h"
@@ -25,6 +26,7 @@ public:
   vector<shared_ptr<Motor>> motors;
   vector<shared_ptr<Chute>> chutes;
   vector<shared_ptr<LED>> leds;
+  vector<shared_ptr<SILSerial>> serials;
   vector<shared_ptr<Microcontroller>> microcontrollers;
 
   double getDrag();
