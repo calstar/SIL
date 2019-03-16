@@ -2,6 +2,18 @@ CC=cc
 CXX=clang++
 RM=rm -f
 
+ifeq (, $(shell which $(CXX)))
+$(info $(CXX) compiler not found, trying g++...)
+CXX=g++
+endif
+ifeq (, $(shell which $(CXX)))
+$(info $(CXX) compiler not found, trying c++...)
+CXX=c++
+endif
+ifeq (, $(shell which $(CXX)))
+$(error No compiler found)
+endif
+
 CPPFLAGS= -g -std=c++14 -DSIL -c -I src -I src/lib
 LDFLAGS= -g
 LDLIBS=
