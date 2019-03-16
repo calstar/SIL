@@ -5,6 +5,7 @@
 #include <string>
 #include <sys/poll.h>
 #include <iostream>
+#include <stdlib.h>
 
 #define MAX_BUF 1024
 
@@ -18,8 +19,10 @@ int main(int argc, char** argv)
   }
   printf("Trying to open terminal...\n");
   string tempdir = getenv("TMPDIR");
-  string outpath = tempdir + "SILOUTTERMINAL" + to_string(mcu_id);
-  string inpath = tempdir + "SILINTERMINAL" + to_string(mcu_id);
+  string outpath = tempdir + "SILOUTTERMINAL";
+  string inpath = tempdir + "SILINTERMINAL";
+  outpath.push_back(mcu_id + '0');
+  inpath.push_back(mcu_id + '0');
   int outfd = open(outpath.c_str(), O_RDONLY);
   int infd = open(inpath.c_str(), O_WRONLY);
   printf("Terminal Opened\n");
