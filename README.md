@@ -69,7 +69,17 @@ Don't actually use // comments, they're not allowed in json 😊
       "frequency": 10000 // Polling frequency
     }
   ],
-  "tests": [ // TODO
+  "tests": [ // List of tests to run, with various failures and required assertions (separate environment for each)
+    {
+      "name": "test1",
+      "assertions": [ // List of assertions checked at launch finish
+        "max_altitude > 300", // Assertion format: {number | environment_variable} [><=] {number | environment_variable}
+        "landing_speed < 10"
+      ],
+      "failures": [ // List of failures
+        "altimeter" // Failure name (see failure classes for details)
+      ]
+    }
   ]
 }
 
