@@ -32,6 +32,11 @@ double Motor::getForce(int64_t current) {
 
   double time = (double)(current - start_time) / 1000000.0;
 
+  // Return 0 if still in fuse
+  if (time < 0) {
+    return 0;
+  }
+
   // if before first entry of thrust curve, return first thrust value
   if (time <= thrust_curve[0].first) {
     return thrust_curve[0].second;

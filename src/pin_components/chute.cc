@@ -1,6 +1,6 @@
 #include "chute.h"
 
-Chute::Chute(double drag, string name) : drag(drag), PinComponent(name) {}
+Chute::Chute(double drag, string name) : drag(drag), PinComponent(name) { }
 
 void Chute::activate(int64_t time) {
   isActivated = true;

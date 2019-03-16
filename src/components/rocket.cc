@@ -42,6 +42,9 @@ Rocket::Rocket(json config) {
       motors.push_back(make_shared<Motor>(it.value()["file"], it.key()));
       if (it.value().find("pin") != it.value().end()) {
           mapPin(it.value()["pin"], motors.back());
+      } else if (it.value().find("fuse") != it.value().end()) {
+          // Sets fuse on motor to start after simulation starts
+          motors.back()->activate((int64_t)(it.value()["fuse"].get<float>() * 1000000));
       } else {
           // Turns on the motor at the start if there's no pin set
           motors.back()->activate(0);

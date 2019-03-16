@@ -17,7 +17,7 @@
     "motors": {
       "booster": {
         "file": "config/motors/aerotech_j800t.json",
-        "pin": "flight_computer:16"
+        "fuse": 10
       }
     },
     "separators": {

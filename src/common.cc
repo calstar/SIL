@@ -22,7 +22,7 @@ vec vec::operator/(const double& b) {
 
 vec vec::norm() {
   double m = this->mag();
-  if (m == 0) {
+  if (m < 0.00001) {
     return *this;
   }
   return *this / m;
