@@ -1,7 +1,12 @@
 # SIL
 Software-in-the-loop simulator for rockets
 
-## Required code file format
+## Compiling SIL
+Run make and pass in microcontroller code:
+```
+make code0=../launch-firmware/fc/fc.h code1=../launch-firmware/tpc/tpc.h
+```
+### Required microcontroller code file format
 ```c
   // Includes must be at top of file
   #include "mbed.h"
@@ -28,12 +33,6 @@ int main() {
 }
 ```
 
-## Compiling SIL
-Run make and pass in microcontroller code:
-```
-make code0=../launch-firmware/fc/fc.h code1=../launch-firmware/tpc/tpc.h
-```
-
 ## Running SIL
 * To run a simulation file
 
@@ -46,6 +45,13 @@ make code0=../launch-firmware/fc/fc.h code1=../launch-firmware/tpc/tpc.h
 ```
 ./build/terminal 0
 ./build/terminal 1
+```
+
+## Simulation file format
+```json
+{
+  "todo": true
+}
 ```
 
 ## Adding output formats
