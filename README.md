@@ -47,7 +47,19 @@ int main() {
 ./build/terminal 1
 ```
 
-## Simulation file format
+### Simulation file formats
+#### Motor file format
+```json
+{
+  "interpolation": "linear", // Type of interpolation between thrust curve points
+  "thrust_curve": {          // Time from activation and thrust (N), must start and end with 0, must be in chronological order
+    "0": 0,
+    "0.5": 100,
+    "5": 100,
+    "5.5": 0
+  }
+}
+```
 ```json
 {
   "todo": true
