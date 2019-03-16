@@ -60,7 +60,11 @@ int main(int argc, char** argv) {
   for (int i = 0; i < MCU_LIMIT; i++) {
     if (ENABLE_TERMINAL[i]) {
       DEBUG_OUT << "Enabling terminal " << i << "... (open ./build/terminal " << i << ")" << endl;
+#ifdef __linux__
+      string tempdir = "/tmp/";
+#else
       string tempdir = getenv("TMPDIR");
+#endif
       string outpath = tempdir + "SILOUTTERMINAL" + to_string(i);
       string inpath = tempdir + "SILINTERMINAL" + to_string(i);
       remove(outpath.c_str());

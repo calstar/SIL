@@ -18,7 +18,11 @@ int main(int argc, char** argv)
     mcu_id = argv[1][0] - '0';
   }
   printf("Trying to open terminal...\n");
-  string tempdir = getenv("TMPDIR");
+#ifdef __linux__
+      string tempdir = "/tmp/";
+#else
+      string tempdir = getenv("TMPDIR");
+#endif
   string outpath = tempdir + "SILOUTTERMINAL";
   string inpath = tempdir + "SILINTERMINAL";
   outpath.push_back(mcu_id + '0');
