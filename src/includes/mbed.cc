@@ -1,4 +1,5 @@
 #include "mbed.h"
+#include <stdarg.h>
 
 void wait(float s) {
   this_thread::sleep_for(chrono::nanoseconds((int64_t)(s * 1E9)));
@@ -81,7 +82,7 @@ void Serial::printf(const char* format, ...) {
   va_list arg;
   char msg[1024];
   va_start (arg, format);
-  vsprintf (msg, format, arg);
+  vsprintf_s (msg, format, arg);
   va_end (arg);
 
   getSerial(txpin)->add(msg, strlen(msg));
