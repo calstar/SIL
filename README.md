@@ -2,6 +2,8 @@
 Software-in-the-loop simulator for rockets
 
 ## Compiling SIL
+SIL works on Mac or Linux. Windows is not currently supported, but you can run it in the Vagrant VM. A C++ compiler (clang++ or g++) and Python (any version) are required. PM Leo or Jaren if compilation fails.
+
 Run make and pass in microcontroller code:
 ```
 make code0=../launch-firmware/fc/fc.h code1=../launch-firmware/tpc/tpc.h
@@ -32,12 +34,12 @@ int main() {
   }
 }
 ```
-
+Code should be self-contained. Any includes except for flatbuffers and mbed will have to be copied to the SIL includes directory.
 ## Running SIL
 * To run a simulation file
 
 ```./build/sil config/simulations/testsim.json```
-* To connect to the debug serial ports, add `-sN`:
+* To connect to the debug serial ports, add `-sN` (unconnected serial ports will print to main output):
 
 ```./build/sil config/simulations/testsim.json -s01```
 * Then in separate terminal windows, open the serial client for each microcontroller:
