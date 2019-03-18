@@ -97,8 +97,8 @@ int main(int argc, char** argv) {
     while (!env.done()) {
       bool ran_code = false;
       for (const auto sect : env.rocket_sections) {
-        for (auto& rp : sect) {
-          for (auto& mcu : rp->microcontrollers) {
+        for (auto rp : sect) {
+          for (auto mcu : rp->microcontrollers) {
             Environment::global_env->current_mcu = mcu;
             Environment::global_env->current_rocket = rp;
             int id = mcu->id;

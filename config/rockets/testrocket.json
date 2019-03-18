@@ -51,7 +51,9 @@
       ["SIL_INPUT", "flight_computer:5"],
       ["flight_computer:6", "SIL_OUTPUT"],
       ["SIL_INPUT", "telemetry_power_control:5"],
-      ["telemetry_power_control:6", "SIL_OUTPUT"]
+      ["telemetry_power_control:6", "SIL_OUTPUT"],
+      ["telemetry_power_control:26", "RADIO_OUTPUT"],
+      ["RADIO_INPUT", "telemetry_power_control:25"]
     ]
   },
   {
@@ -89,5 +91,20 @@
         "id": 2
       }
     }
+  },
+  {
+    "name": "groundstation",
+    "grounded": true,
+    "microcontrollers": {
+      "gs": {
+        "id": 3
+      }
+    },
+    "communications": [
+      ["gs:6", "SIL_OUTPUT"],
+      ["SIL_INPUT", "gs:5"],
+      ["gs:26", "RADIO_OUTPUT"],
+      ["RADIO_INPUT", "gs:25"]
+    ]
   }
 ]

@@ -3,15 +3,23 @@
 #include "pincomponent.h"
 #include <string>
 #include <vector>
+#include <memory>
 
 using namespace std;
 
-class SILSerial : public PinComponent {
+enum SERIAL_MODE {
+  NORMAL,
+  SIL_INPUT,
+  SIL_OUTPUT,
+  RADIO_INPUT,
+  RADIO_OUTPUT
+};
+
+class SILSerial : public PinComponent, enable_shared_from_this<SILSerial> {
   vector<char> buffer;
 
 public:
-  bool sil_input;
-  bool sil_output;
+  SERIAL_MODE mode;
 
   SILSerial();
 

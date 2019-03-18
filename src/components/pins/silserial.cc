@@ -8,8 +8,7 @@ extern int SERIAL_IN_FDS[MCU_LIMIT];
 extern int SERIAL_OUT_FDS[MCU_LIMIT];
 
 SILSerial::SILSerial() : PinComponent("Serial") {
-  sil_input = false;
-  sil_output = false;
+  mode = SERIAL_MODE::NORMAL;
 }
 
 void SILSerial::add(string s) {
@@ -17,12 +16,25 @@ void SILSerial::add(string s) {
 }
 
 void SILSerial::add(const char* buf, int len) {
-  if (sil_output) {
-    int fd = SERIAL_OUT_FDS[Environment::global_env->current_mcu->id];
+  int curr_id = Environment::global_env->current_mcu->id;
+  if (mode == SERIAL_MODE::SIL_OUTPUT) {
+    int fd = SERIAL_OUT_FDS[curr_id];
     if (fd != 0) {
       write(fd, buf, len);
     } else {
       PRINT_OUT << "Serial Output: " << string(buf, len) << endl;
+    }
+  } else if (mode == SERIAL_MODE::RADIO_OUTPUT) {
+    for (auto section : Environment::global_env->rocket_sections) {
+      for (auto roc : section) {
+        for (auto serial : roc->serials) {
+          if (serial->mode == SERIAL_MODE::RADIO_INPUT) {
+            if (serial.get() != this) {
+              serial->add(buf, len);
+            }
+          }
+        }
+      }
     }
   } else {
     for (int i = 0; i < len; i++) {

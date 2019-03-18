@@ -12,12 +12,17 @@ void Rocket::mapPin(string mapping, shared_ptr<PinComponent> component) {
 }
 
 Rocket::Rocket(json config) {
-  // Get properties of rocket section
-  assert(config.count("weight") == 1);
-  weight = config["weight"].get<double>();
+  // If section is grounded (e.g. ground station)
+  grounded = config.count("grounded") == 1 && config["grounded"].get<bool>() == true;
 
-  assert(config.count("drag_area") == 1);
-  drag = config["drag_area"].get<double>();
+  if (!grounded) {
+    // Get properties of rocket section
+    assert(config.count("weight") == 1);
+    weight = config["weight"].get<double>();
+
+    assert(config.count("drag_area") == 1);
+    drag = config["drag_area"].get<double>();
+  }
 
   assert(config.count("name") == 1);
   section_name = config["name"].get<string>();
@@ -37,30 +42,32 @@ Rocket::Rocket(json config) {
     mapPin(m.first, m.second);
   }
 
-  // Add all motors
-  for (auto& it : config["motors"].items()) {
-      motors.push_back(make_shared<Motor>(it.value()["file"], it.key()));
-      if (it.value().find("pin") != it.value().end()) {
-          mapPin(it.value()["pin"], motors.back());
-      } else if (it.value().find("fuse") != it.value().end()) {
-          // Sets fuse on motor to start after simulation starts
-          motors.back()->activate((int64_t)(it.value()["fuse"].get<float>() * 1000000));
-      } else {
-          // Turns on the motor at the start if there's no pin set
-          motors.back()->activate(0);
-      }
-  }
-  if (motors.size() == 0) {
-    DEBUG_OUT << "WARNING: No motors in section: " << section_name << endl;
-  }
+  if (!grounded) {
+    // Add all motors
+    for (auto& it : config["motors"].items()) {
+        motors.push_back(make_shared<Motor>(it.value()["file"], it.key()));
+        if (it.value().find("pin") != it.value().end()) {
+            mapPin(it.value()["pin"], motors.back());
+        } else if (it.value().find("fuse") != it.value().end()) {
+            // Sets fuse on motor to start after simulation starts
+            motors.back()->activate((int64_t)(it.value()["fuse"].get<float>() * 1000000));
+        } else {
+            // Turns on the motor at the start if there's no pin set
+            motors.back()->activate(0);
+        }
+    }
+    if (motors.size() == 0) {
+      DEBUG_OUT << "WARNING: No motors in section: " << section_name << endl;
+    }
 
-  // Add all chutes
-  for (auto& it : config["chutes"].items()) {
-      chutes.push_back(make_shared<Chute>(it.value()["drag_area"], it.key()));
-      mapPin(it.value()["pin"], chutes.back());
-  }
-  if (chutes.size() == 0) {
-    DEBUG_OUT << "WARNING: No chutes in section: " << section_name << endl;
+    // Add all chutes
+    for (auto& it : config["chutes"].items()) {
+        chutes.push_back(make_shared<Chute>(it.value()["drag_area"], it.key()));
+        mapPin(it.value()["pin"], chutes.back());
+    }
+    if (chutes.size() == 0) {
+      DEBUG_OUT << "WARNING: No chutes in section: " << section_name << endl;
+    }
   }
 
   // Add all LEDs
@@ -77,21 +84,25 @@ Rocket::Rocket(json config) {
     for (auto p : config["communications"]) {
       serials.emplace_back(make_shared<SILSerial>());
       if (p[0] == "SIL_INPUT") {
-        serials.back()->sil_input = true;
+        serials.back()->mode = SERIAL_MODE::SIL_INPUT;
         string mapping = p[1];
         bool found = false;
         for (auto mcu : microcontrollers) {
           if (mapping.substr(0, mapping.find_first_of(":")) == mcu->name) {
-            mcu->serial_in = serials[serials.size() - 1];
+            mcu->serial_in = serials.back();
             found = true;
           }
         }
         if (!found) ERROR("MCU not found");
+      } else if (p[0] == "RADIO_INPUT") {
+        serials.back()->mode = SERIAL_MODE::RADIO_INPUT;
       } else {
         mapPin(p[0], serials.back());
       }
       if (p[1] == "SIL_OUTPUT") {
-        serials.back()->sil_output = true;
+        serials.back()->mode = SERIAL_MODE::SIL_OUTPUT;
+      } else if (p[1] == "RADIO_OUTPUT") {
+        serials.back()->mode = SERIAL_MODE::RADIO_OUTPUT;
       } else {
         mapPin(p[1], serials.back());
       }
@@ -100,6 +111,8 @@ Rocket::Rocket(json config) {
 }
 
 void Rocket::setState(vec pos, vec vel, vec acc, vec dir) {
+  if (grounded) return;
+
   this->pos = pos;
   this->measured_pos = pos + vec(0, 0, Noise::awgn(ALT_NOISE_MAGNITUDE));
   this->vel = vel;
@@ -116,13 +129,19 @@ vector<set<shared_ptr<Rocket>>> Rocket::parseParts(json config, vec init_pos, ve
     DEBUG_OUT << "Loaded section \"" << r->section_name << "\"" << endl;
     r->setState(init_pos, init_vel, init_accel, init_dir);
 
-    main_section.insert(r);
+    if (r->grounded) {
+      rocket_sections.push_back({r});
+    } else {
+      main_section.insert(r);
+    }
   }
   rocket_sections.push_back(main_section);
   return rocket_sections;
 }
 
 double Rocket::getDrag() {
+  if (grounded) return 0;
+
   double ret = drag;
 
   for (auto& chute : chutes) {
@@ -133,6 +152,8 @@ double Rocket::getDrag() {
 }
 
 double Rocket::getForce(int64_t time) {
+  if (grounded) return 0;
+
   double ret = 0;
   for (auto& m : motors) {
     ret += m->getForce(time);
