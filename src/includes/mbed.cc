@@ -67,7 +67,8 @@ shared_ptr<SILSerial> getSerial(int pin) {
   auto roc = Environment::global_env->current_rocket;
 
 
-  return dynamic_pointer_cast<SILSerial>(mcu->getComponent(pin));
+  shared_ptr<SILSerial> ret = dynamic_pointer_cast<SILSerial>(mcu->getComponent(pin));
+  return ret;
 }
 
 void Serial::baud(int rate) {

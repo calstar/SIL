@@ -48,6 +48,7 @@ void Environment::tick() {
 
   for (auto section : rocket_sections) {
     if (section.size() == 0) continue;
+    if (section.size() == 1 && (*section.begin())->grounded) continue;
 
     vec acc{0, 0, -9.81}; // m/s
     vec force{0, 0, 0}; // N

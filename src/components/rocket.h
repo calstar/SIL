@@ -14,6 +14,7 @@ private:
 
 public:
   string section_name;
+  bool grounded;
   double weight;
   double drag;
   vec pos;  // In meters

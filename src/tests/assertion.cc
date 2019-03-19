@@ -5,7 +5,7 @@ Assertion::Assertion(json config) {
     string v1;
     string v2;
     stringstream str(config.get<string>());
-    
+
     assertionString = config.get<string>();
 
     str >> v1;
@@ -30,7 +30,7 @@ double* Assertion::setValue(string config) {
     // https://stackoverflow.com/a/29169469
     double d;
     istringstream i(config);
-    i >> d >> ws;
+    i >> ws >> d;
 
     if (!i.fail() && i.eof()) {
         return new double(d); // Memory leak but doesn't really matter
