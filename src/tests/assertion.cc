@@ -33,7 +33,7 @@ double* Assertion::setValue(string config) {
     i >> d >> ws;
 
     if (!i.fail() && i.eof()) {
-        return new double(d);
+        return new double(d); // Memory leak but doesn't really matter
     } else {
         if (config == "max_altitude") {
             return &Environment::global_env->max_altitude;
