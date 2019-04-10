@@ -42,6 +42,36 @@ inline const char *EnumNameTPCState(TPCState e) {
   return EnumNamesTPCState()[index];
 }
 
+enum DownlinkType {
+  DownlinkType_StateUpdate = 0,
+  DownlinkType_Ack = 1,
+  DownlinkType_MIN = DownlinkType_StateUpdate,
+  DownlinkType_MAX = DownlinkType_Ack
+};
+
+inline const DownlinkType (&EnumValuesDownlinkType())[2] {
+  static const DownlinkType values[] = {
+    DownlinkType_StateUpdate,
+    DownlinkType_Ack
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesDownlinkType() {
+  static const char * const names[] = {
+    "StateUpdate",
+    "Ack",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameDownlinkType(DownlinkType e) {
+  if (e < DownlinkType_StateUpdate || e > DownlinkType_Ack) return "";
+  const size_t index = static_cast<int>(e);
+  return EnumNamesDownlinkType()[index];
+}
+
 struct DownlinkMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_BYTES = 4,
@@ -49,7 +79,11 @@ struct DownlinkMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_FCPOWERED = 8,
     VT_FCMSG = 10,
     VT_GPSSTRING = 12,
-    VT_BATTVOLTAGE = 14
+    VT_BATTVOLTAGE = 14,
+    VT_FRAMEID = 16,
+    VT_ACKREQD = 18,
+    VT_TIMESTAMP = 20,
+    VT_TYPE = 22
   };
   uint8_t Bytes() const {
     return GetField<uint8_t>(VT_BYTES, 0);
@@ -69,6 +103,18 @@ struct DownlinkMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint16_t BattVoltage() const {
     return GetField<uint16_t>(VT_BATTVOLTAGE, 0);
   }
+  uint8_t FrameID() const {
+    return GetField<uint8_t>(VT_FRAMEID, 0);
+  }
+  bool AckReqd() const {
+    return GetField<uint8_t>(VT_ACKREQD, 0) != 0;
+  }
+  uint64_t TimeStamp() const {
+    return GetField<uint64_t>(VT_TIMESTAMP, 0);
+  }
+  DownlinkType Type() const {
+    return static_cast<DownlinkType>(GetField<int8_t>(VT_TYPE, 0));
+  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint8_t>(verifier, VT_BYTES) &&
@@ -79,6 +125,10 @@ struct DownlinkMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyOffset(verifier, VT_GPSSTRING) &&
            verifier.VerifyString(GPSString()) &&
            VerifyField<uint16_t>(verifier, VT_BATTVOLTAGE) &&
+           VerifyField<uint8_t>(verifier, VT_FRAMEID) &&
+           VerifyField<uint8_t>(verifier, VT_ACKREQD) &&
+           VerifyField<uint64_t>(verifier, VT_TIMESTAMP) &&
+           VerifyField<int8_t>(verifier, VT_TYPE) &&
            verifier.EndTable();
   }
 };
@@ -104,6 +154,18 @@ struct DownlinkMsgBuilder {
   void add_BattVoltage(uint16_t BattVoltage) {
     fbb_.AddElement<uint16_t>(DownlinkMsg::VT_BATTVOLTAGE, BattVoltage, 0);
   }
+  void add_FrameID(uint8_t FrameID) {
+    fbb_.AddElement<uint8_t>(DownlinkMsg::VT_FRAMEID, FrameID, 0);
+  }
+  void add_AckReqd(bool AckReqd) {
+    fbb_.AddElement<uint8_t>(DownlinkMsg::VT_ACKREQD, static_cast<uint8_t>(AckReqd), 0);
+  }
+  void add_TimeStamp(uint64_t TimeStamp) {
+    fbb_.AddElement<uint64_t>(DownlinkMsg::VT_TIMESTAMP, TimeStamp, 0);
+  }
+  void add_Type(DownlinkType Type) {
+    fbb_.AddElement<int8_t>(DownlinkMsg::VT_TYPE, static_cast<int8_t>(Type), 0);
+  }
   explicit DownlinkMsgBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
@@ -123,11 +185,19 @@ inline flatbuffers::Offset<DownlinkMsg> CreateDownlinkMsg(
     bool FCPowered = false,
     flatbuffers::Offset<FCUpdateMsg> FCMsg = 0,
     flatbuffers::Offset<flatbuffers::String> GPSString = 0,
-    uint16_t BattVoltage = 0) {
+    uint16_t BattVoltage = 0,
+    uint8_t FrameID = 0,
+    bool AckReqd = false,
+    uint64_t TimeStamp = 0,
+    DownlinkType Type = DownlinkType_StateUpdate) {
   DownlinkMsgBuilder builder_(_fbb);
+  builder_.add_TimeStamp(TimeStamp);
   builder_.add_GPSString(GPSString);
   builder_.add_FCMsg(FCMsg);
   builder_.add_BattVoltage(BattVoltage);
+  builder_.add_Type(Type);
+  builder_.add_AckReqd(AckReqd);
+  builder_.add_FrameID(FrameID);
   builder_.add_FCPowered(FCPowered);
   builder_.add_State(State);
   builder_.add_Bytes(Bytes);
@@ -141,7 +211,11 @@ inline flatbuffers::Offset<DownlinkMsg> CreateDownlinkMsgDirect(
     bool FCPowered = false,
     flatbuffers::Offset<FCUpdateMsg> FCMsg = 0,
     const char *GPSString = nullptr,
-    uint16_t BattVoltage = 0) {
+    uint16_t BattVoltage = 0,
+    uint8_t FrameID = 0,
+    bool AckReqd = false,
+    uint64_t TimeStamp = 0,
+    DownlinkType Type = DownlinkType_StateUpdate) {
   auto GPSString__ = GPSString ? _fbb.CreateString(GPSString) : 0;
   return Calstar::CreateDownlinkMsg(
       _fbb,
@@ -150,7 +224,11 @@ inline flatbuffers::Offset<DownlinkMsg> CreateDownlinkMsgDirect(
       FCPowered,
       FCMsg,
       GPSString__,
-      BattVoltage);
+      BattVoltage,
+      FrameID,
+      AckReqd,
+      TimeStamp,
+      Type);
 }
 
 inline const Calstar::DownlinkMsg *GetDownlinkMsg(const void *buf) {

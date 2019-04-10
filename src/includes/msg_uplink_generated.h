@@ -13,18 +13,18 @@ struct UplinkMsg;
 enum UplinkType {
   UplinkType_FCOn = 0,
   UplinkType_FCOff = 1,
-  UplinkType_BlackPowderOn = 2,
-  UplinkType_BlackPowderOff = 3,
+  UplinkType_BlackPowderPulse = 3,
+  UplinkType_Ack = 4,
   UplinkType_MIN = UplinkType_FCOn,
-  UplinkType_MAX = UplinkType_BlackPowderOff
+  UplinkType_MAX = UplinkType_Ack
 };
 
 inline const UplinkType (&EnumValuesUplinkType())[4] {
   static const UplinkType values[] = {
     UplinkType_FCOn,
     UplinkType_FCOff,
-    UplinkType_BlackPowderOn,
-    UplinkType_BlackPowderOff
+    UplinkType_BlackPowderPulse,
+    UplinkType_Ack
   };
   return values;
 }
@@ -33,15 +33,16 @@ inline const char * const *EnumNamesUplinkType() {
   static const char * const names[] = {
     "FCOn",
     "FCOff",
-    "BlackPowderOn",
-    "BlackPowderOff",
+    "",
+    "BlackPowderPulse",
+    "Ack",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameUplinkType(UplinkType e) {
-  if (e < UplinkType_FCOn || e > UplinkType_BlackPowderOff) return "";
+  if (e < UplinkType_FCOn || e > UplinkType_Ack) return "";
   const size_t index = static_cast<int>(e);
   return EnumNamesUplinkType()[index];
 }
@@ -50,7 +51,9 @@ struct UplinkMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_BYTES = 4,
     VT_TYPE = 6,
-    VT_BP = 8
+    VT_BP = 8,
+    VT_FRAMEID = 10,
+    VT_ACKREQD = 12
   };
   uint8_t Bytes() const {
     return GetField<uint8_t>(VT_BYTES, 0);
@@ -61,12 +64,20 @@ struct UplinkMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const flatbuffers::Vector<uint8_t> *BP() const {
     return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_BP);
   }
+  uint8_t FrameID() const {
+    return GetField<uint8_t>(VT_FRAMEID, 0);
+  }
+  bool AckReqd() const {
+    return GetField<uint8_t>(VT_ACKREQD, 0) != 0;
+  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint8_t>(verifier, VT_BYTES) &&
            VerifyField<int8_t>(verifier, VT_TYPE) &&
            VerifyOffset(verifier, VT_BP) &&
            verifier.VerifyVector(BP()) &&
+           VerifyField<uint8_t>(verifier, VT_FRAMEID) &&
+           VerifyField<uint8_t>(verifier, VT_ACKREQD) &&
            verifier.EndTable();
   }
 };
@@ -82,6 +93,12 @@ struct UplinkMsgBuilder {
   }
   void add_BP(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> BP) {
     fbb_.AddOffset(UplinkMsg::VT_BP, BP);
+  }
+  void add_FrameID(uint8_t FrameID) {
+    fbb_.AddElement<uint8_t>(UplinkMsg::VT_FRAMEID, FrameID, 0);
+  }
+  void add_AckReqd(bool AckReqd) {
+    fbb_.AddElement<uint8_t>(UplinkMsg::VT_ACKREQD, static_cast<uint8_t>(AckReqd), 0);
   }
   explicit UplinkMsgBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -99,9 +116,13 @@ inline flatbuffers::Offset<UplinkMsg> CreateUplinkMsg(
     flatbuffers::FlatBufferBuilder &_fbb,
     uint8_t Bytes = 0,
     UplinkType Type = UplinkType_FCOn,
-    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> BP = 0) {
+    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> BP = 0,
+    uint8_t FrameID = 0,
+    bool AckReqd = false) {
   UplinkMsgBuilder builder_(_fbb);
   builder_.add_BP(BP);
+  builder_.add_AckReqd(AckReqd);
+  builder_.add_FrameID(FrameID);
   builder_.add_Type(Type);
   builder_.add_Bytes(Bytes);
   return builder_.Finish();
@@ -111,13 +132,17 @@ inline flatbuffers::Offset<UplinkMsg> CreateUplinkMsgDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     uint8_t Bytes = 0,
     UplinkType Type = UplinkType_FCOn,
-    const std::vector<uint8_t> *BP = nullptr) {
+    const std::vector<uint8_t> *BP = nullptr,
+    uint8_t FrameID = 0,
+    bool AckReqd = false) {
   auto BP__ = BP ? _fbb.CreateVector<uint8_t>(*BP) : 0;
   return Calstar::CreateUplinkMsg(
       _fbb,
       Bytes,
       Type,
-      BP__);
+      BP__,
+      FrameID,
+      AckReqd);
 }
 
 inline const Calstar::UplinkMsg *GetUplinkMsg(const void *buf) {
