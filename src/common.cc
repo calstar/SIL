@@ -32,7 +32,7 @@ double vec::mag() {
   return sqrt(pow(this->x, 2) + pow(this->y, 2) + pow(this->z, 2));
 }
 
-ostream& operator<<(ostream& os, vec& v) {
+ostream& operator<<(ostream& os, vec v) {
   os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
   return os;
 }

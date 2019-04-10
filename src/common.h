@@ -40,11 +40,11 @@ struct vec {
   vec operator-(const vec& b);
   vec operator*(const double& b);
   vec operator/(const double& b);
-  friend ostream& operator<<(ostream& os, vec v);
 
   vec norm();
   double mag();
 };
+ostream& operator<<(ostream& os, vec v);
 
 void ERROR() __attribute__((__noreturn__));
 void ERROR(string msg) __attribute__((__noreturn__));

@@ -16,7 +16,7 @@ protected:
   virtual void log(int64_t time, vector<set<shared_ptr<Rocket>>>& rocket_sections) = 0;
 
 public:
-  Output(json config);
+  Output(json config, string test_name);
   void update(int64_t time, vector<set<shared_ptr<Rocket>>>& rocket_sections);
   void finish();
 

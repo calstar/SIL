@@ -22,3 +22,10 @@
 #define BP7_IGNITE 22
 #define BP7_CONT   23
 #define FC_SWITCH  24
+#define RADIO_RX   25
+#define RADIO_TX   26
+#define SPI1_MOSI  27
+#define SPI1_MISO  28
+#define SPI1_SCLK  29
+#define SPI1_SSEL  30
+#define RADIO_RST  31

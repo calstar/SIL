@@ -1,7 +1,7 @@
 #include "outputs/output.h"
 
-Output::Output(json config) {
-  file = config["file"].get<string>();
+Output::Output(json config, string test_name) {
+  file = test_name + "_" + config["file"].get<string>();
   frequency = config["frequency"].get<int>();
   lastPoll = 0;
 }

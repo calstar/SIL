@@ -49,6 +49,7 @@ int main(int argc, char** argv)
       cin >> input;
       write(infd, input.c_str(), input.size() + 1);
     }
+    usleep(10000);
   }
 
   return 0;

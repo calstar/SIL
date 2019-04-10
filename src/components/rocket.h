@@ -1,12 +1,12 @@
 #pragma once
 #include "common.h"
-#include "pin_components/motor.h"
+#include "components/pins//motor.h"
 #include "components/noise.h"
 #include "components/microcontroller.h"
-#include "pin_components/silserial.h"
-#include "pin_components/chute.h"
-#include "pin_components/led.h"
-#include "pin_components/pinComponent.h"
+#include "components/pins//silserial.h"
+#include "components/pins//chute.h"
+#include "components/pins//led.h"
+#include "components/pins//pincomponent.h"
 
 class Rocket {
 private:
@@ -14,6 +14,7 @@ private:
 
 public:
   string section_name;
+  bool grounded;
   double weight;
   double drag;
   vec pos;  // In meters

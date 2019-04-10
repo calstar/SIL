@@ -1,6 +1,6 @@
 #pragma once
 #include "common.h"
-#include "pinComponent.h"
+#include "pincomponent.h"
 
 class LED : public PinComponent {
 

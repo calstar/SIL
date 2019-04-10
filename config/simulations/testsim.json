@@ -15,5 +15,25 @@
       "file": "pos_data.csv",
       "frequency": 10000
     }
+  ],
+  "tests": [
+    {
+      "name": "normal",
+      "assertions": [
+        "max_altitude > 300",
+        "landing_speed < 10"
+      ],
+      "failures": [
+      ]
+    },
+    {
+      "name": "altimeter_failure",
+      "assertions": [
+        "max_altitude > 500",
+        "landing_speed < 10"
+      ],
+      "failures": [
+      ]
+    }
   ]
 }

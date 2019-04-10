@@ -1,6 +1,6 @@
 #include "outputs/pos_output.h"
 
-PosOutput::PosOutput(json config) : Output(config) {}
+PosOutput::PosOutput(json config, string test_name) : Output(config, test_name) {}
 
 void PosOutput::log(int64_t time, vector<set<shared_ptr<Rocket>>>& rocket_sections) {
     for (auto& sect : rocket_sections) {

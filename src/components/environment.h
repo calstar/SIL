@@ -11,20 +11,24 @@ class Environment {
 
   vector<shared_ptr<Output>> outputs;
 
-  double max_altitude;
-  double max_acceleration;
-  double max_speed;
-
 public:
   // A list of sets of connected rocket components
   vector<set<shared_ptr<Rocket>>> rocket_sections;
   shared_ptr<Rocket> current_rocket;
   shared_ptr<Microcontroller> current_mcu;
 
+  string test_name;
+  double max_altitude;
+  double max_acceleration;
+  double max_speed;
+  double landing_speed;
+  vec landing_pos;
+  int64_t landing_time;
+
   static void setGlobalEnv(Environment* env);
   static Environment* global_env;
 
-  Environment(string sim_file);
+  Environment(json config, string test_name);
   bool done();
   void tick();
   int64_t micros();

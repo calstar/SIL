@@ -1,9 +1,8 @@
 #pragma once
 #include "common.h"
-#include "pinComponent.h"
+#include "pincomponent.h"
 
 class Motor : public PinComponent {
-  string name;
   string interpolation;
   int64_t start_time;
   vector<pair<double, double>> thrust_curve; // <time, force>
