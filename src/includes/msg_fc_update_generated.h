@@ -44,31 +44,21 @@ struct FCUpdateMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_BYTES = 4,
     VT_STATE = 6,
-    VT_ACCELX = 8,
-    VT_ACCELY = 10,
-    VT_ACCELZ = 12,
-    VT_MAGX = 14,
-    VT_MAGY = 16,
-    VT_MAGZ = 18,
-    VT_GYROX = 20,
-    VT_GYROY = 22,
-    VT_GYROZ = 24,
-    VT_ALTITUDE = 26,
-    VT_PRESSURE = 28,
-    VT_BP1CONTINUITY = 30,
-    VT_BP1IGNITED = 32,
-    VT_BP2CONTINUITY = 34,
-    VT_BP2IGNITED = 36,
-    VT_BP3CONTINUITY = 38,
-    VT_BP3IGNITED = 40,
-    VT_BP4CONTINUITY = 42,
-    VT_BP4IGNITED = 44,
-    VT_BP5CONTINUITY = 46,
-    VT_BP5IGNITED = 48,
-    VT_BP6CONTINUITY = 50,
-    VT_BP6IGNITED = 52,
-    VT_BP7CONTINUITY = 54,
-    VT_BP7IGNITED = 56
+    VT_ALTITUDE = 8,
+    VT_BP1CONTINUITY = 10,
+    VT_BP1IGNITED = 12,
+    VT_BP2CONTINUITY = 14,
+    VT_BP2IGNITED = 16,
+    VT_BP3CONTINUITY = 18,
+    VT_BP3IGNITED = 20,
+    VT_BP4CONTINUITY = 22,
+    VT_BP4IGNITED = 24,
+    VT_BP5CONTINUITY = 26,
+    VT_BP5IGNITED = 28,
+    VT_BP6CONTINUITY = 30,
+    VT_BP6IGNITED = 32,
+    VT_BP7CONTINUITY = 34,
+    VT_BP7IGNITED = 36
   };
   uint8_t Bytes() const {
     return GetField<uint8_t>(VT_BYTES, 0);
@@ -76,38 +66,8 @@ struct FCUpdateMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   FCState State() const {
     return static_cast<FCState>(GetField<int8_t>(VT_STATE, 0));
   }
-  float AccelX() const {
-    return GetField<float>(VT_ACCELX, 0.0f);
-  }
-  float AccelY() const {
-    return GetField<float>(VT_ACCELY, 0.0f);
-  }
-  float AccelZ() const {
-    return GetField<float>(VT_ACCELZ, 0.0f);
-  }
-  float MagX() const {
-    return GetField<float>(VT_MAGX, 0.0f);
-  }
-  float MagY() const {
-    return GetField<float>(VT_MAGY, 0.0f);
-  }
-  float MagZ() const {
-    return GetField<float>(VT_MAGZ, 0.0f);
-  }
-  float GyroX() const {
-    return GetField<float>(VT_GYROX, 0.0f);
-  }
-  float GyroY() const {
-    return GetField<float>(VT_GYROY, 0.0f);
-  }
-  float GyroZ() const {
-    return GetField<float>(VT_GYROZ, 0.0f);
-  }
   float Altitude() const {
     return GetField<float>(VT_ALTITUDE, 0.0f);
-  }
-  float Pressure() const {
-    return GetField<float>(VT_PRESSURE, 0.0f);
   }
   bool BP1Continuity() const {
     return GetField<uint8_t>(VT_BP1CONTINUITY, 0) != 0;
@@ -155,17 +115,7 @@ struct FCUpdateMsg FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyField<uint8_t>(verifier, VT_BYTES) &&
            VerifyField<int8_t>(verifier, VT_STATE) &&
-           VerifyField<float>(verifier, VT_ACCELX) &&
-           VerifyField<float>(verifier, VT_ACCELY) &&
-           VerifyField<float>(verifier, VT_ACCELZ) &&
-           VerifyField<float>(verifier, VT_MAGX) &&
-           VerifyField<float>(verifier, VT_MAGY) &&
-           VerifyField<float>(verifier, VT_MAGZ) &&
-           VerifyField<float>(verifier, VT_GYROX) &&
-           VerifyField<float>(verifier, VT_GYROY) &&
-           VerifyField<float>(verifier, VT_GYROZ) &&
            VerifyField<float>(verifier, VT_ALTITUDE) &&
-           VerifyField<float>(verifier, VT_PRESSURE) &&
            VerifyField<uint8_t>(verifier, VT_BP1CONTINUITY) &&
            VerifyField<uint8_t>(verifier, VT_BP1IGNITED) &&
            VerifyField<uint8_t>(verifier, VT_BP2CONTINUITY) &&
@@ -193,38 +143,8 @@ struct FCUpdateMsgBuilder {
   void add_State(FCState State) {
     fbb_.AddElement<int8_t>(FCUpdateMsg::VT_STATE, static_cast<int8_t>(State), 0);
   }
-  void add_AccelX(float AccelX) {
-    fbb_.AddElement<float>(FCUpdateMsg::VT_ACCELX, AccelX, 0.0f);
-  }
-  void add_AccelY(float AccelY) {
-    fbb_.AddElement<float>(FCUpdateMsg::VT_ACCELY, AccelY, 0.0f);
-  }
-  void add_AccelZ(float AccelZ) {
-    fbb_.AddElement<float>(FCUpdateMsg::VT_ACCELZ, AccelZ, 0.0f);
-  }
-  void add_MagX(float MagX) {
-    fbb_.AddElement<float>(FCUpdateMsg::VT_MAGX, MagX, 0.0f);
-  }
-  void add_MagY(float MagY) {
-    fbb_.AddElement<float>(FCUpdateMsg::VT_MAGY, MagY, 0.0f);
-  }
-  void add_MagZ(float MagZ) {
-    fbb_.AddElement<float>(FCUpdateMsg::VT_MAGZ, MagZ, 0.0f);
-  }
-  void add_GyroX(float GyroX) {
-    fbb_.AddElement<float>(FCUpdateMsg::VT_GYROX, GyroX, 0.0f);
-  }
-  void add_GyroY(float GyroY) {
-    fbb_.AddElement<float>(FCUpdateMsg::VT_GYROY, GyroY, 0.0f);
-  }
-  void add_GyroZ(float GyroZ) {
-    fbb_.AddElement<float>(FCUpdateMsg::VT_GYROZ, GyroZ, 0.0f);
-  }
   void add_Altitude(float Altitude) {
     fbb_.AddElement<float>(FCUpdateMsg::VT_ALTITUDE, Altitude, 0.0f);
-  }
-  void add_Pressure(float Pressure) {
-    fbb_.AddElement<float>(FCUpdateMsg::VT_PRESSURE, Pressure, 0.0f);
   }
   void add_BP1Continuity(bool BP1Continuity) {
     fbb_.AddElement<uint8_t>(FCUpdateMsg::VT_BP1CONTINUITY, static_cast<uint8_t>(BP1Continuity), 0);
@@ -284,17 +204,7 @@ inline flatbuffers::Offset<FCUpdateMsg> CreateFCUpdateMsg(
     flatbuffers::FlatBufferBuilder &_fbb,
     uint8_t Bytes = 0,
     FCState State = FCState_Pad,
-    float AccelX = 0.0f,
-    float AccelY = 0.0f,
-    float AccelZ = 0.0f,
-    float MagX = 0.0f,
-    float MagY = 0.0f,
-    float MagZ = 0.0f,
-    float GyroX = 0.0f,
-    float GyroY = 0.0f,
-    float GyroZ = 0.0f,
     float Altitude = 0.0f,
-    float Pressure = 0.0f,
     bool BP1Continuity = false,
     bool BP1Ignited = false,
     bool BP2Continuity = false,
@@ -310,17 +220,7 @@ inline flatbuffers::Offset<FCUpdateMsg> CreateFCUpdateMsg(
     bool BP7Continuity = false,
     bool BP7Ignited = false) {
   FCUpdateMsgBuilder builder_(_fbb);
-  builder_.add_Pressure(Pressure);
   builder_.add_Altitude(Altitude);
-  builder_.add_GyroZ(GyroZ);
-  builder_.add_GyroY(GyroY);
-  builder_.add_GyroX(GyroX);
-  builder_.add_MagZ(MagZ);
-  builder_.add_MagY(MagY);
-  builder_.add_MagX(MagX);
-  builder_.add_AccelZ(AccelZ);
-  builder_.add_AccelY(AccelY);
-  builder_.add_AccelX(AccelX);
   builder_.add_BP7Ignited(BP7Ignited);
   builder_.add_BP7Continuity(BP7Continuity);
   builder_.add_BP6Ignited(BP6Ignited);

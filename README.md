@@ -6,7 +6,7 @@ SIL works on Mac or Linux. Windows is not currently supported, but you can run i
 
 Run make and pass in microcontroller code:
 ```
-make code0=../launch-firmware/fc/fc.h code1=../launch-firmware/tpc/tpc.h
+make code0=../firmware-launch/fc/fc.h code1=../firmware-launch/tpc/tpc.h
 ```
 ### Required microcontroller code file format
 ```c
