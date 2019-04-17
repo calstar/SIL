@@ -15,7 +15,7 @@ enum SERIAL_MODE {
   RADIO_OUTPUT
 };
 
-class SILSerial : public PinComponent, enable_shared_from_this<SILSerial> {
+class SILSerial : public PinComponent, public enable_shared_from_this<SILSerial> {
   vector<char> buffer;
 
 public:
