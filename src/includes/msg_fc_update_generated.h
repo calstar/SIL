@@ -11,31 +11,52 @@ namespace Calstar {
 struct FCUpdateMsg;
 
 enum FCState {
-  FCState_Pad = 0,
-  FCState_Flight = 1,
-  FCState_MIN = FCState_Pad,
-  FCState_MAX = FCState_Flight
+  FCState_Setup = 0,
+  FCState_Pad = 1,
+  FCState_Flight = 2,
+  FCState_Armed = 3,
+  FCState_DrogueIgnition = 4,
+  FCState_DrogueCoast = 5,
+  FCState_MainIgnition = 6,
+  FCState_MainCoast = 7,
+  FCState_Landed = 8,
+  FCState_MIN = FCState_Setup,
+  FCState_MAX = FCState_Landed
 };
 
-inline const FCState (&EnumValuesFCState())[2] {
+inline const FCState (&EnumValuesFCState())[9] {
   static const FCState values[] = {
+    FCState_Setup,
     FCState_Pad,
-    FCState_Flight
+    FCState_Flight,
+    FCState_Armed,
+    FCState_DrogueIgnition,
+    FCState_DrogueCoast,
+    FCState_MainIgnition,
+    FCState_MainCoast,
+    FCState_Landed
   };
   return values;
 }
 
 inline const char * const *EnumNamesFCState() {
   static const char * const names[] = {
+    "Setup",
     "Pad",
     "Flight",
+    "Armed",
+    "DrogueIgnition",
+    "DrogueCoast",
+    "MainIgnition",
+    "MainCoast",
+    "Landed",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameFCState(FCState e) {
-  if (e < FCState_Pad || e > FCState_Flight) return "";
+  if (e < FCState_Setup || e > FCState_Landed) return "";
   const size_t index = static_cast<int>(e);
   return EnumNamesFCState()[index];
 }
@@ -203,7 +224,7 @@ struct FCUpdateMsgBuilder {
 inline flatbuffers::Offset<FCUpdateMsg> CreateFCUpdateMsg(
     flatbuffers::FlatBufferBuilder &_fbb,
     uint8_t Bytes = 0,
-    FCState State = FCState_Pad,
+    FCState State = FCState_Setup,
     float Altitude = 0.0f,
     bool BP1Continuity = false,
     bool BP1Ignited = false,
