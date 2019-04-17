@@ -53,7 +53,7 @@ class Serial {
   int rxpin;
   int txpin;
 public:
-  Serial(int tx, int xx);
+  Serial(int tx, int xx, int baud = 0);
   void baud(int rate);
   void set_blocking(bool blocking);
   void printf(const char* format, ...);

@@ -3,6 +3,8 @@
 #include "components/noise.h"
 #include "includes/mbed.h"
 
+#define MPL3115A2_ADDRESS   0xC0    // Shifted 7-bit I2C address for sensor
+
 class Altitude {
     // TODO: Support more of the API?
     // Possibly include unit conversions, etc.
@@ -25,6 +27,10 @@ public:
     char whoAmI();
     void init();
     Altitude* readAltitude(Altitude* a);
+    void setOversampleRate(char rate);
+    void setModeStandby();
+    void setModeAltimeter();
+    void setModeActive();
     char offsetAltitude();
     void setOffsetAltitude(const char offset);
 };

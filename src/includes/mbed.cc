@@ -57,7 +57,7 @@ us_timestamp_t Timer::read_high_resolution_us() {
   }
 }
 
-Serial::Serial(int tx, int rx) {
+Serial::Serial(int tx, int rx, int baud) {
   rxpin = rx;
   txpin = tx;
 }
