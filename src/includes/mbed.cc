@@ -66,7 +66,6 @@ shared_ptr<SILSerial> getSerial(int pin) {
   auto mcu = Environment::global_env->current_mcu;
   auto roc = Environment::global_env->current_rocket;
 
-
   shared_ptr<SILSerial> ret = dynamic_pointer_cast<SILSerial>(mcu->getComponent(pin));
   return ret;
 }
@@ -89,6 +88,10 @@ void Serial::printf(const char* format, ...) {
   getSerial(txpin)->add(msg, strlen(msg));
 }
 
+ssize_t Serial::read(uint8_t* buf, int len, void* callback) {
+  return getSerial(txpin)->get((char*)buf, len);
+}
+
 void Serial::write(uint8_t* buf, int len, void* callback) {
   getSerial(txpin)->add((char*)buf, len);
 }
@@ -99,6 +102,18 @@ bool Serial::readable() {
 
 char Serial::getc() {
   return getSerial(rxpin)->getc();
+}
+
+UARTSerial::UARTSerial(int tx, int rx, int baud) : Serial(tx, rx, baud) {
+
+}
+
+ssize_t UARTSerial::read(uint8_t* buf, int len) {
+  return Serial::read(buf, len, 0);
+}
+
+void UARTSerial::write(uint8_t* buf, int len) {
+  Serial::write(buf, len, 0);
 }
 
 I2C::I2C(int sda, int scl) : sda(sda), scl(scl) {}

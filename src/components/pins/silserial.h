@@ -25,6 +25,7 @@ public:
 
   void add(string s);
   void add(const char* buf, int len);
+  ssize_t get(char* buf, int len);
   char getc();
   bool empty();
   void activate(int64_t time);

@@ -43,6 +43,16 @@ void SILSerial::add(const char* buf, int len) {
   }
 }
 
+ssize_t SILSerial::get(char* buf, int len) {
+  for (int i = 0; i < len; i++) {
+    if (empty()) {
+      return i;
+    }
+    buf[i] = getc();
+  }
+  return len;
+}
+
 char SILSerial::getc() {
   if (empty()) ERROR();
   char ret = buffer.at(0);

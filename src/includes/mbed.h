@@ -53,13 +53,21 @@ class Serial {
   int rxpin;
   int txpin;
 public:
-  Serial(int tx, int xx, int baud = 0);
+  Serial(int tx, int rx, int baud = 0);
   void baud(int rate);
   void set_blocking(bool blocking);
   void printf(const char* format, ...);
   void write(uint8_t* buf, int len, void* callback);
+  ssize_t read(uint8_t* buf, int len, void* callback);
   bool readable();
   char getc();
+};
+
+class UARTSerial : public Serial {
+public:
+  UARTSerial(int tx, int rx, int baud = 0);
+  void write(uint8_t* buf, int len);
+  ssize_t read(uint8_t* buf, int len);
 };
 
 class I2C {
