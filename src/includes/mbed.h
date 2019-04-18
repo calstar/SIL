@@ -36,6 +36,13 @@ public:
   operator int();
 };
 
+class AnalogIn {
+  int pin;
+public:
+  AnalogIn(int pin);
+  uint16_t read_u16();
+};
+
 class Timer {
   us_timestamp_t previous;
   us_timestamp_t startTime;

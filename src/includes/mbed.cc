@@ -31,6 +31,10 @@ DigitalOut::operator int() {
   return read();
 }
 
+AnalogIn::AnalogIn(int pin) : pin(pin) { }
+
+uint16_t AnalogIn::read_u16() { return 0; }
+
 Timer::Timer() {}
 
 void Timer::start() {
