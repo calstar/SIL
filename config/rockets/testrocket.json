@@ -43,6 +43,9 @@
       },
       "telemetry_power_control": {
         "id": 1
+      },
+      "gps_stub": {
+        "id": 2
       }
     },
     "communications": [
@@ -53,6 +56,8 @@
       ["SIL_INPUT", "telemetry_power_control:5"],
       ["telemetry_power_control:6", "SIL_OUTPUT"],
       ["telemetry_power_control:26", "RADIO_OUTPUT"],
+      ["gps_stub:33", "telemetry_power_control:32"],
+      ["telemetry_power_control:33", "gps_stub:32"],
       ["RADIO_INPUT", "telemetry_power_control:25"]
     ]
   },

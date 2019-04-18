@@ -29,3 +29,6 @@
 #define SPI1_SCLK  29
 #define SPI1_SSEL  30
 #define RADIO_RST  31
+#define GPS_RX 32
+#define GPS_TX 33
+#define BATT_VOLTAGE 34
