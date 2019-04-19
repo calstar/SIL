@@ -1,6 +1,11 @@
 #include "mbed.h"
 #include <stdarg.h>
 
+void DEACTIVATE() {
+  auto mcu = Environment::global_env->current_mcu;
+  mcu->deactivate(0);
+}
+
 void wait(float s) {
   this_thread::sleep_for(chrono::nanoseconds((int64_t)(s * 1E9)));
 }
@@ -93,7 +98,7 @@ void Serial::printf(const char* format, ...) {
 }
 
 ssize_t Serial::read(uint8_t* buf, int len, void* callback) {
-  return getSerial(txpin)->get((char*)buf, len);
+  return getSerial(rxpin)->get((char*)buf, len);
 }
 
 void Serial::write(uint8_t* buf, int len, void* callback) {

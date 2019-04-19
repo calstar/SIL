@@ -17,6 +17,8 @@ namespace code4 { void loop(); }
 
 typedef int64_t us_timestamp_t;
 
+void DEACTIVATE();
+
 void wait(float s);
 int64_t micros();
 

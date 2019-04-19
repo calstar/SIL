@@ -28,8 +28,10 @@ shared_ptr<PinComponent> Microcontroller::getComponent(int index) {
 
 void Microcontroller::activate(int64_t time) {
   powered = true;
+  DEBUG_OUT << "MCU Activated: " << name << endl;
 }
 
 void Microcontroller::deactivate(int64_t time) {
   powered = false;
+  DEBUG_OUT << "MCU Deactivated: " << name << endl;
 }

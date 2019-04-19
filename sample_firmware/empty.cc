@@ -1,4 +1,7 @@
+#include "mbed.h"
+
 void start() {
+  DEACTIVATE();
 }
 
 void loop() {
