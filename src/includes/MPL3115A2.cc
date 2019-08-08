@@ -2,7 +2,7 @@
 
 Altitude::Altitude() : _altitude(0) {}
 
-float Altitude::altitude() {
+float Altitude::altitude() const {
     return _altitude;
 }
 

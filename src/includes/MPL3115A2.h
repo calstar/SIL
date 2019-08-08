@@ -13,7 +13,7 @@ class Altitude {
 public:
     Altitude();
 
-    float altitude();
+    float altitude() const;
     void setAltitude(float value); 
 };
 
