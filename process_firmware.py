@@ -8,7 +8,7 @@ if len(sys.argv) != 4:
 outdir = sys.argv[1]
 namespace = sys.argv[2]
 filepath = sys.argv[3]
-outpath = "%s/%s.cc" % (outdir, namespace)
+outpath = "%s/%s.cc.new" % (outdir, namespace)
 
 if not re.match(r"^code\d+$", namespace):
     print("Invalid namespace name. Format must be code{{n}}: %s" % namespace)

@@ -44,14 +44,15 @@ $(OBJDIR)/%.o: %.cc
 code%: # Rebuilds every time because the codeN could change values
 	$(if $($@), \
 		@echo "================Processing $@ ($($@))=================" && python ./process_firmware.py $(FIRMWAREDIR) $@ $($@), \
-		@echo "================Using default file ($(EMPTY_FW_FILE)) for unset $@=================" && python ./process_firmware.py $(FIRMWAREDIR) $@ $(EMPTY_FW_FILE))
-
+		@echo "================Using default file ($(EMPTY_FW_FILE)) for unset $@=================" && python ./process_firmware.py $(FIRMWAREDIR) $@ $(EMPTY_FW_FILE) \
+	)
+	@cmp --silent $(FIRMWAREDIR)/$@.cc $(FIRMWAREDIR)/$@.cc.new && echo "$@ unchanged..." || cp $(FIRMWAREDIR)/$@.cc.new $(FIRMWAREDIR)/$@.cc
 
 builddir:
-	mkdir -p $(BUILDDIR)
-	mkdir -p $(OBJDIR)
-	mkdir -p $(FIRMWAREDIR)
-	$(foreach file,$(dir $(OBJS)),mkdir -p $(file);)
+	@mkdir -p $(BUILDDIR)
+	@mkdir -p $(OBJDIR)
+	@mkdir -p $(FIRMWAREDIR)
+	@$(foreach file,$(dir $(OBJS)),mkdir -p $(file);)
 
 clean:
 	$(RM) -r $(BUILDDIR)

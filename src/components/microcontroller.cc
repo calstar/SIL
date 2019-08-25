@@ -11,7 +11,15 @@ void Microcontroller::mapPin(int index, PinMapping mapping) {
 }
 
 void Microcontroller::setPin(int64_t time, int index, bool value) {
+    if (pinMap.count(index) == 0) {
+      cerr << "Pin " << index << " not mapped" << endl;
+      assert(false);
+    }
     if (value != pinMap[index].value) {
+        if (!pinMap[index].component) {
+          cerr << "Pin " << index << " missing component" << endl;
+          assert(false);
+        }
         pinMap[index].value = value;
         if (value) {
             pinMap[index].component->activate(time);

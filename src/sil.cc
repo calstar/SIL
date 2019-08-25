@@ -71,6 +71,7 @@ int main(int argc, char** argv) {
   ifstream file(argv[1]);
   if (!file.good()) {
     cerr << "File does not exist: " << argv[1] << endl;
+
     assert(false);
   }
 
