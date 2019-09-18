@@ -149,6 +149,17 @@ Don't actually use // comments, they're not allowed in json 😊
   }
 }
 ```
+## Using debug uart
+Use `Serial` or `UARTSerial` in mbed.h (in src/includes)
+
+An example of output:
+```c
+Serial debug_uart(DEBUG_TX, DEBUG_RX, 115200); // tx pin, rx pin, baud rate (rate of data transfer)
+
+// printf is normal c printf
+debug_uart.printf("Hello altitude is %f\n", altitude); // here altitude is a float
+```
+
 
 ## Adding output formats
 * Create a .cc and .h file for the intended output (subclass of Output)
