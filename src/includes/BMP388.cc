@@ -32,7 +32,7 @@ Pressure *BMP388::readPressure(Pressure *const p) const {
 
     // Sim calculates with feet, so calculate pressure from feet
     const double h_ft = Environment::global_env->current_rocket->measured_pos.z * 3.28084;
-    const double p_pa = 10.1325*std::pow(1.0 - h_ft/145366.45, 5.25530);
+    const double p_pa = 101325*std::pow(1.0 - h_ft/145366.45, 5.25530);
 
     p->setPressure(p_pa);
     return p;
