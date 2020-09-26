@@ -7,7 +7,7 @@ DigitalOut myled(STATE_LED_RED);
 float max_alt;
 
 I2C i2c_sensors(I2C_SENSOR_SDA, I2C_SENSOR_SCL);
-Serial debug(DEBUG_RX, DEBUG_TX);
+Serial debug(DEBUG_TX, DEBUG_RX);
 
 Altitude altitude;
 MPL3115A2 altimeter(&i2c_sensors, &debug);
