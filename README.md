@@ -12,20 +12,41 @@ make code0=../firmware-launch/fc/fc.h code1=../firmware-launch/tpc/tpc.h
 ```c
   // Includes must be at top of file
   #include "mbed.h"
-  // < Other includes here >
+  #include "pins.h"
+  #include "MPL3115A2.h"
+  #include "BMP388.h"
+  
   
   // < Defines and global variables should come after the includes and before main >
+  I2C i2c_sensors(I2C_SENSOR_SDA, I2C_SENSOR_SCL);
+  Serial debug(DEBUG_TX, DEBUG_RX);
+
+  Altitude altitude;
+  MPL3115A2 altimeter(&i2c_sensors, &debug);
+
+  Pressure pressure;
+  BMP388 barometer(&i2c_sensors, &debug);
   
   // Start function, run at the beginning of the program
   void start() {
-    // < Code here >
+    max_alt = 0;
+    barometer.init();
   }
   
   // Loop function, run continuously
   void loop() {
-    // Code here
-  }
+    // Read pressure
+    barometer.readPressure(&pressure);
+    float pressure_pascals = pressure.pressure();
+   
+   // TODO: Convert pressure to altitude.
 
+  // TODO: Use altitude (current, and possibly past) to
+  // determine peak (apogee) and 600ft on the way down
+
+  // TODO: when you hit apogee, do drogue_parachute_pin = 1
+  // TODO: when you pass 600ft on the way down, do main_parachute_pin = 1.
+}
   // Main is optional but must be at the end of the file if it exists
 int main() {
   start();
