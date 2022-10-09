@@ -1,29 +1,35 @@
 #include "pins.h"
 #include "mbed.h"
-#include "MPL3115A2.h"
+#include "BMP388.h"
 
-DigitalOut myled(STATE_LED_RED);
+// TODO Define your pins here
+// Syntax: DigitalOut <pin_name>(<pin_number>); (without the angle brackets)
 
 float max_alt;
+// TODO What other vars  might it be useful to define? 
 
 I2C i2c_sensors(I2C_SENSOR_SDA, I2C_SENSOR_SCL);
 Serial debug(DEBUG_TX, DEBUG_RX);
 
-Altitude altitude;
-MPL3115A2 altimeter(&i2c_sensors, &debug);
+Pressure pressure;
+BMP388 barometer(&i2c_sensors, &debug);
+
 
 void start() {
+    //Assign any other variables here. 
     max_alt = 0;
-    altimeter.init();
+    barometer.init();
 }
 
 void loop() {
-    myled = (micros() / 1000000) & 1; // Flash every second
+    // Read pressure using the BMP388 library
+    barometer.readPressure(&pressure);
+    float pressure_pascals = pressure.pressure();
+    
+    // TODO Convert pressure to altitude.
+    // TODO Update max altitude 
+    // TODO Deploy parachutes at the correct time by setting pins to a boolean true value
 
-    altimeter.readAltitude(&altitude);
-    const float alt = altitude.altitude();
-
-    max_alt = max(max_alt, alt);
 }
 
 int main() {
