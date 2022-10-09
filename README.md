@@ -10,49 +10,45 @@ make code0=../firmware-launch/fc/fc.h code1=../firmware-launch/tpc/tpc.h
 ```
 ### Required microcontroller code file format
 ```c
-  // Includes must be at top of file
-  #include "mbed.h"
-  #include "pins.h"
-  #include "MPL3115A2.h"
-  #include "BMP388.h"
-  
-  
-  // < Defines and global variables should come after the includes and before main >
-  I2C i2c_sensors(I2C_SENSOR_SDA, I2C_SENSOR_SCL);
-  Serial debug(DEBUG_TX, DEBUG_RX);
+#include "pins.h"
+#include "mbed.h"
+#include "BMP388.h"
 
-  Altitude altitude;
-  MPL3115A2 altimeter(&i2c_sensors, &debug);
+// TODO Define your pins here
+// Syntax: DigitalOut <pin_name>(<pin_number>); (without the angle brackets)
 
-  Pressure pressure;
-  BMP388 barometer(&i2c_sensors, &debug);
-  
-  // Start function, run at the beginning of the program
-  void start() {
+float max_alt;
+// TODO What other vars  might it be useful to define? 
+
+I2C i2c_sensors(I2C_SENSOR_SDA, I2C_SENSOR_SCL);
+Serial debug(DEBUG_TX, DEBUG_RX);
+
+Pressure pressure;
+BMP388 barometer(&i2c_sensors, &debug);
+
+
+void start() {
+    //Assign any other variables here. 
     max_alt = 0;
     barometer.init();
-  }
-  
-  // Loop function, run continuously
-  void loop() {
-    // Read pressure
+}
+
+void loop() {
+    // Read pressure using the BMP388 library
     barometer.readPressure(&pressure);
     float pressure_pascals = pressure.pressure();
-   
-   // TODO: Convert pressure to altitude.
+    
+    // TODO Convert pressure to altitude.
+    // TODO Update max altitude 
+    // TODO Deploy parachutes at the correct time by setting pins to a boolean true value
 
-  // TODO: Use altitude (current, and possibly past) to
-  // determine peak (apogee) and 600ft on the way down
-
-  // TODO: when you hit apogee, do drogue_parachute_pin = 1
-  // TODO: when you pass 600ft on the way down, do main_parachute_pin = 1.
 }
-  // Main is optional but must be at the end of the file if it exists
+
 int main() {
-  start();
-  while (1) {
-    loop();
-  }
+    start();
+    while (true) {
+        loop();
+    }
 }
 ```
 Code should be self-contained. Any includes except for flatbuffers and mbed will have to be copied to the SIL includes directory.
