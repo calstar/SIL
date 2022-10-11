@@ -58,7 +58,7 @@ Code should be self-contained. Any includes except for flatbuffers and mbed will
 ```./build/sil config/simulations/intro_proj_sim.json```
 * To connect to the debug serial ports, add `-sN` (unconnected serial ports will print to main output):
 
-```./build/sil config/simulations/testsim.json -s01```
+```./build/sil config/simulations/intro_proj_sim.json -s01```
 * Then in separate terminal windows, open the serial client for each microcontroller:
 
 ```
