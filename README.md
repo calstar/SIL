@@ -55,7 +55,7 @@ Code should be self-contained. Any includes except for flatbuffers and mbed will
 ## Running SIL
 * To run a simulation file
 
-```./build/sil config/simulations/testsim.json```
+```./build/sil config/simulations/intro_proj_sim.json```
 * To connect to the debug serial ports, add `-sN` (unconnected serial ports will print to main output):
 
 ```./build/sil config/simulations/testsim.json -s01```
